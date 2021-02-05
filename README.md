@@ -80,12 +80,82 @@ Register the plugin via the entry file of your project.
 ```javascript
 // Register Capacitor Plugin...
 import '@capacitor-community/safe-area';
+
 ```
 
 It is **strongly** recomended that you use the **SafeAreaController** as it makes it super easy to use the plugin :)
 
 ```javascript
 import { SafeAreaController } from '@capacitor-community/safe-area';
+
+// Initialize the controller.
+SafeAreaController.load();
+
+// Gets the insets object
+// Shape
+/*
+ {
+     top: number,
+     bottom: number,
+     right: number,
+     left: number,
+ }
+ */
+SafeAreaController.getInsets();
+
+// Use this to listen for changes in the insets.
+// i.e. when the device is rotated
+SafeAreaController.addListener((insets) => {
+    
+});
+
+// Use this to force the plugin to invoke the event
+// Example, after you add a listener perhaps you invoke refresh
+// to get the most up-to-date inset values.
+SafeAreaController.refresh();
+
+// Uninitialize the controller when you don't need it anymore.
+SafeAreaController.unload();
+```
+
+Once the **SafeAreaController** has been loaded, it will inject CSS variables for you to use via your CSS.
+
+```css
+/* styling for every case Web, iOS, and/or Android */
+.myContainer {
+	paddingTop: max(1.5rem, val(--safe-area-inset-top)); 
+	paddingLeft: max(1.5rem, val(--safe-area-inset-left));
+	paddingRight: max(1.5rem, val(--safe-area-inset-right));
+	paddingBottom: val(--safe-area-inset-bottom);
+}
+
+/* If you need Android specific stying */
+.myContainerForAndroidOnlyForSomeReason {
+	paddingTop: max(1.5rem, val(--android-safe-area-inset-top)); 
+	paddingLeft: max(1.5rem, val(--android-safe-area-inset-left));
+	paddingRight: max(1.5rem, val(--android-safe-area-inset-right));
+	paddingBottom: val(--android-safe-area-inset-bottom);
+}
+
+/* If you need iOS specific styling */
+.myContainerForIOSOnly {
+	paddingTop: max(1.5rem, val(--ios-safe-area-inset-top)); 
+	paddingLeft: max(1.5rem, val(--ios-safe-area-inset-left));
+	paddingRight: max(1.5rem, val(--ios-safe-area-inset-right));
+	paddingBottom: val(--ios-safe-area-inset-bottom);
+}
+```
+
+This can also be used with the styles attribute in something like React.js for example.
+```jsx
+// This div will grow to cover the area of the cutout
+// this would be at the very top.
+<div
+	style={{
+		height: "var(--safe-area-inset-top)",
+		backgroundColor: "#12005e"
+	}}>
+</div>
 ```
 
 <details>
