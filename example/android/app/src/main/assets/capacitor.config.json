@@ -1,0 +1,13 @@
+{
+  "appId": "com.pachecok.safeareaexample",
+  "appName": "SafeAreaExample",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
