@@ -1,5 +1,5 @@
 {
-  "appId": "com.pachecok.safeareaexample",
+  "appId": "com.capacitorjs.community.plugins.safearea.safeareaexample",
   "appName": "SafeAreaExample",
   "bundledWebRuntime": false,
   "npmClient": "npm",

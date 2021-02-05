@@ -1,4 +1,4 @@
-package com.pachecok.safeareaexample;
+package com.capacitorjs.community.plugins.safeaarea.safeareaexample;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
-import com.getcapacitor.community.safearea.SafeAreaPlugin;
+import com.capacitorjs.community.plugins.safearea.SafeAreaPlugin;
 
 import java.util.ArrayList;
 

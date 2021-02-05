@@ -1,4 +1,4 @@
-package com.getcapacitor.community.safearea;
+package com.capacitorjs.community.plugins.safearea;
 
 import android.content.Context;
 import android.hardware.Sensor;

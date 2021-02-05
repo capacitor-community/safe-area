@@ -1,11 +1,8 @@
-package com.getcapacitor.community.safearea;
+package com.capacitorjs.community.plugins.safearea;
 
 import com.getcapacitor.JSObject;
 
-import java.io.Serializable;
-import java.util.Iterator;
-
-public class SafeAreaInsets implements Serializable {
+public class SafeAreaInsets {
 	private int top, bottom, right, left;
 
 	public SafeAreaInsets() {
