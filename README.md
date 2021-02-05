@@ -118,7 +118,7 @@ SafeAreaController.refresh();
 SafeAreaController.unload();
 ```
 
-Once the **SafeAreaController** has been loaded, it will inject CSS variables for you to use via your CSS.
+Once the **SafeAreaController** has been loaded, it will inject CSS variables for you to use in your style sheets.
 
 ```css
 /* styling for every case Web, iOS, and/or Android */
@@ -130,7 +130,7 @@ Once the **SafeAreaController** has been loaded, it will inject CSS variables fo
 }
 
 /* If you need Android specific stying */
-.myContainerForAndroidOnlyForSomeReason {
+.myContainerForAndroidOnly {
 	paddingTop: max(1.5rem, val(--android-safe-area-inset-top)); 
 	paddingLeft: max(1.5rem, val(--android-safe-area-inset-left));
 	paddingRight: max(1.5rem, val(--android-safe-area-inset-right));
