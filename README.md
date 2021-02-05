@@ -25,12 +25,130 @@
 
 ## Installation
 
-TODO
+Soon(TM)
 
 ## Configuration
 
-TODO
+iOS: Soon(TM)
+
+For Android, register plugin in your main activity.
+
+```java
+import com.getcapacitor.community.safearea.SafeAreaPlugin;
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+  
+	this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
+	  add(SafeAreaPlugin.class);
+	}});
+  }
+}
+```
+Here is a bonus tip, to get full screen mode use this in your main activity. Requires Android **28+**
+
+```java
+@Override
+public void onResume() {
+super.onResume();
+
+// Requires API 28+
+this.getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+
+View decorView = this.getWindow().getDecorView();
+
+decorView.setSystemUiVisibility(
+		View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+				// Set the content to appear under the system bars so that the
+				// content doesn't resize when the system bars hide and show.
+				| View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+				| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				// Hide the nav bar and status bar
+				| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_FULLSCREEN);
+}
+  ```
+To change the Android build version, change the **minSdkVersion** to at least 28 in the **variables.gradle** file. <br />
+For more information please see Android's [immersive](https://developer.android.com/training/system-ui/immersive), and [short edges](https://developer.android.com/reference/android/view/WindowManager.LayoutParams#LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES) documentation.
 
 ## Usage
+Register the plugin via the entry file of your project.
 
-TODO
+```javascript
+// Register Capacitor Plugin...
+import '@capacitor-community/safe-area';
+```
+
+It is **strongly** recomended that you use the **SafeAreaController** as it makes it super easy to use the plugin :)
+
+```javascript
+import { SafeAreaController } from '@capacitor-community/safe-area';
+```
+
+<details>
+  <summary>React - SafeAreaInsetsProvider</summary>
+  
+  Here is a component that can be used by React.js developers. This handles everything for you via the SafeAreaController. There is a hook you can use as well called **useSafeAreaInsetsState** which will return a JSON object with top, bottom, right, and left number properties.
+  
+```javascript 
+import * as React from 'react';
+import { SafeAreaController } from '@capacitor-community/safe-area';
+
+const StateContext = React.createContext();
+
+export const useSafeAreaInsetsState = () => {
+	const context = React.useContext(StateContext);
+
+	if(context === undefined)
+		throw new Error("Cannot use 'useSafeAreaInsetsState' outside of a SafeAreaInsetsProvider!");
+	
+	return context;
+}
+
+const SafeAreaInsetsProvider = ({children}) => {
+	const [state, setState] = React.useState({
+		top: 0,
+		bottom: 0,
+		right: 0,
+		left: 0
+	});
+
+	React.useState(() => {
+		SafeAreaController.addListener((insets) => {
+			setState(insets);
+		});
+
+		SafeAreaController.load();
+
+		return () => {
+			SafeAreaController.removeAllListeners();
+			SafeAreaController.unload();
+		}
+	}, []);
+
+	return (
+		<StateContext.Provider value={state}>
+			{children}
+		</StateContext.Provider>
+	)
+};
+
+export default SafeAreaInsetsProvider;
+```
+
+You can then use this provider ideally in the **index** file of your project.
+
+```javascript
+ReactDOM.render(
+	<React.StrictMode>
+		<SafeAreaInsetsProvider>
+			<App />
+		</SafeAreaInsetsProvider>
+	</React.StrictMode>,
+	document.getElementById('root')
+);
+```
+</details>
