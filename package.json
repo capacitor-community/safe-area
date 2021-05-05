@@ -37,7 +37,7 @@
     "dist/",
     "ios/",
     "android/",
-    "SafeAreaPlugin.podspec"
+    "CapacitorCommunitySafeArea.podspec"
   ],
   "keywords": [
     "capacitor",

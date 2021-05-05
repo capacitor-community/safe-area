@@ -29,8 +29,6 @@ Soon(TM)
 
 ## Configuration
 
-iOS: Soon(TM)
-
 For Android, register plugin in your main activity.
 
 ```java
