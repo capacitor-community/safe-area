@@ -1,26 +1,34 @@
 import Foundation
 import Capacitor
 
-func makeSafeArea(top: Int, bottom: Int, right: Int, left: Int) -> [String :[String: Int]] {
+func makeSafeArea(_ insets: CGRect) -> [String :[String: Int]] {
     return [
         "insets": [
-            "top": top,
-            "bottom": bottom,
-            "right": right,
-            "left": left
+            "top": Int(insets.minY),
+            "bottom": Int(insets.height),
+            "right": Int(insets.width),
+            "left": Int(insets.minX)
         ]
     ];
 }
 
-func getStatusBarFrame(controller: UIViewController) -> CGRect {
-    if #available(iOS 13.0, *) {
-        let keyWindow = UIApplication.shared.windows
-            .filter { window in window.rootViewController == controller }
-            .first
-        return keyWindow?.windowScene?.statusBarManager?.statusBarFrame ?? CGRect.zero
-    } else {
-        return UIApplication.shared.statusBarFrame
+func getInsets(controller: UIViewController) -> CGRect {
+    let keyWindow = UIApplication.shared.windows
+        .filter { window in window.rootViewController == controller }
+        .first
+    
+    if (keyWindow == nil) {
+        return CGRect.zero;
     }
+    
+    let safeFrame = keyWindow!.safeAreaLayoutGuide.layoutFrame
+    
+    return CGRect(
+        x: safeFrame.minX,
+        y: safeFrame.minY,
+        width: keyWindow!.frame.maxX - safeFrame.maxX,
+        height: keyWindow!.frame.maxY - safeFrame.maxY
+    )
 }
 
 @objc
@@ -44,19 +52,13 @@ let EVENT_ON_INSETS_CHANGED = "safeAreaPluginsInsetChange"
 public class SafeAreaPlugin: CAPPlugin {
     public static let ViewWillTransitionToSizeWithCoordinatorNotification = NSNotification.Name(rawValue: "SafeAreaPlugin.ViewWillTransitionToSizeWithCoordinator");
     
-    private var safeArea = makeSafeArea(top: 0, bottom: 0, right: 0, left: 0)
+    private var safeArea = makeSafeArea(CGRect.zero)
     
     override public func load() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(self.onDidBecomeActive),
             name: UIApplication.didBecomeActiveNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.onWillResignActive),
-            name: UIApplication.willResignActiveNotification,
             object: nil
         )
         
@@ -82,8 +84,8 @@ public class SafeAreaPlugin: CAPPlugin {
     }
     
     @objc func refresh(_ call: CAPPluginCall) {
-        let frame = getStatusBarFrame(controller: self.bridge.viewController)
-        self.changeSafeArea(top: Int(frame.size.height));
+        let insets = getInsets(controller: self.bridge.viewController)
+        self.changeSafeArea(insets);
         call.success()
     }
 
@@ -92,22 +94,34 @@ public class SafeAreaPlugin: CAPPlugin {
     }
     
     @objc func onDidBecomeActive() {
-        let frame = getStatusBarFrame(controller: self.bridge.viewController)
-        self.changeSafeArea(top: Int(frame.size.height))
+        let insets = getInsets(controller: self.bridge.viewController)
+        self.changeSafeArea(insets)
     }
     
-    @objc func onWillResignActive() {}
-    
     @objc func onWillChangeStatusBarFrameNotification(newFrame: CGRect) {
-        self.changeSafeArea(top: Int(newFrame.height))
+        let insets = getInsets(controller: self.bridge.viewController)
+        let insetsGuess = CGRect(
+            x: insets.minX,
+            y: newFrame.height,
+            width: insets.width,
+            height: insets.height
+        )
+        self.changeSafeArea(insetsGuess)
     }
     
     @objc func onViewWillTransitionTo(sizeWithCoordinator: SizeWithCoordinator) {
-        self.changeSafeArea(top: Int(sizeWithCoordinator.size.height))
+        let insets = getInsets(controller: self.bridge.viewController)
+        let insetsGuess = CGRect(
+            x: insets.minX,
+            y: sizeWithCoordinator.size.height,
+            width: insets.width,
+            height: insets.height
+        )
+        self.changeSafeArea(insetsGuess)
     }
     
-    func changeSafeArea(top: Int) {
-        self.safeArea = makeSafeArea(top: top, bottom: 0, right: 0, left: 0)
+    func changeSafeArea(_ insets: CGRect) {
+        self.safeArea = makeSafeArea(insets)
         self.notifyListeners(EVENT_ON_INSETS_CHANGED, data: self.safeArea)
     }
 }
