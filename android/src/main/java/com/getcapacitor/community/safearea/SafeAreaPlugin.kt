@@ -1,6 +1,5 @@
 package com.getcapacitor.community.safearea
 
-import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
@@ -8,12 +7,34 @@ import com.getcapacitor.annotation.CapacitorPlugin
 
 @CapacitorPlugin(name = "SafeArea")
 class SafeAreaPlugin : Plugin() {
-    private val implementation = SafeArea()
+    private var implementation: SafeArea? = null
+
+    override fun load() {
+        implementation = SafeArea(activity, bridge.webView)
+
+        val enabled = config.configJSON.optBoolean("enabled", false)
+
+        if (enabled) {
+            implementation?.offset = config.configJSON.optInt("offset", 0)
+            implementation?.enable(false, AppearanceConfig(config.configJSON))
+        }
+    }
+
     @PluginMethod
-    fun echo(call: PluginCall) {
-        val value = call.getString("value")
-        val ret = JSObject()
-        ret.put("value", value?.let { implementation.echo(it) })
-        call.resolve(ret)
+    fun enable(call: PluginCall) {
+        val jsonObject = call.getObject("config")
+
+        if (jsonObject.has("offset")) {
+            implementation?.offset = jsonObject.optInt("offset", 0)
+        }
+
+        val appearanceConfig = AppearanceConfig(jsonObject)
+        implementation?.enable(true, appearanceConfig)
+    }
+
+    @PluginMethod
+    fun disable(call: PluginCall) {
+        val appearanceConfig = AppearanceConfig(call.getObject("config"))
+        implementation?.disable(appearanceConfig)
     }
 }

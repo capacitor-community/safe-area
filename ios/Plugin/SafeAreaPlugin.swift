@@ -7,12 +7,11 @@ import Capacitor
  */
 @objc(SafeAreaPlugin)
 public class SafeAreaPlugin: CAPPlugin {
-    private let implementation = SafeArea()
+    @objc func enable(_ call: CAPPluginCall) {
+        call.unimplemented("Not implemented on iOS.")
+    }
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    @objc func disable(_ call: CAPPluginCall) {
+        call.unimplemented("Not implemented on iOS.")
     }
 }

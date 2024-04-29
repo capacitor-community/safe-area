@@ -1,10 +1,15 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { SafeAreaPlugin } from './definitions';
+import type { Config, SafeAreaPlugin } from './definitions';
 
 export class SafeAreaWeb extends WebPlugin implements SafeAreaPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async enable(_options: { config: Config }): Promise<void> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async disable(_options: { config: Config }): Promise<void> {
+    throw this.unimplemented('Not implemented on web.');
   }
 }
