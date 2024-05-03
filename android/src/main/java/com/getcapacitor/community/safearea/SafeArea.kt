@@ -15,6 +15,11 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
     fun enable(updateInsets: Boolean, appearanceConfig: AppearanceConfig) {
         activity.window.decorView.getRootView().setOnApplyWindowInsetsListener { view, insets ->
             updateInsets()
+            // @TODO: appearance is sometimes not updated on app load
+            // probably because it is superseded by another plugin or native thing that updates the appearance
+            // This is probably not the best way to override that behaviour
+            // So we should think of something better than simply calling `updateAppearance` here
+            updateAppearance(appearanceConfig)
             view.onApplyWindowInsets(insets)
         }
 
