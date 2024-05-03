@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">SafeAreaExample</string>
-    <string name="title_activity_main">SafeAreaExample</string>
-    <string name="package_name">com.capacitorjs.community.plugins.safearea.safeareaexample</string>
-    <string name="custom_url_scheme">com.capacitorjs.community.plugins.safearea.safeareaexample</string>
-</resources>
