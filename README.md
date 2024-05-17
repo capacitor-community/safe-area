@@ -15,7 +15,7 @@
 
 ## Introduction
 
-On web and iOS the safe area insets work out of the box. On Android (in combination with Capacitor), however, the safe area insets are not exposed by default. So we need to work some magic in order to have access to those values. This plugin detects the safe area insets on Android, and exposes them to the browser. On web and iOS it will just fallback to the given values (which, again, are working out of the box).
+On web and iOS the safe area insets work out of the box. That is, on these platforms the `env(safe-area-inset-*)` CSS variables will have the correct values by default. On Android (in combination with Capacitor), however, those CSS variables will not have the correct values when Edge-to-Edge mode is enabled. So we need to work some magic in order to have access to the correct values. This plugin does that by detecting the safe area insets on Android, and injecting them as CSS variables to the browser. On web and iOS it will just fallback to the given values (which, again, are working out of the box).
 
 There's one small but important quirck though, since we cannot override the native `env(safe-area-inset-*)` variables, the values are instead written to custom `var(--safe-area-inset-*)` variables.
 
@@ -82,6 +82,10 @@ npx cap sync
 
 ## Usage
 
+This plugin can be enabled either by using the API or by using the Configuration. It's also possible to combine those two.
+
+### Using the API
+
 ```ts
 import { SafeArea } from '@capacitor-community/safe-area';
 
@@ -96,6 +100,10 @@ SafeArea.enable({
 });
 ```
 
+### Using the Configuration
+
+See the [Configuration documentation below](#examples) for examples.
+
 > [!IMPORTANT]
 > If you're enabling this plugin by using the configuration only and not by calling any of the API methods,
 > you should still import the plugin like so:
@@ -103,6 +111,28 @@ SafeArea.enable({
 > ```ts
 > import '@capacitor-community/safe-area';
 > ```
+
+### Using the CSS variables
+
+Having done this, the plugin will inject the correct safe area insets as CSS variables to the browser. This enables you to use those variables inside your CSS. You're now able to do this for example:
+
+```css
+#header {
+  padding-top: var(--safe-area-inset-top);
+}
+```
+
+Or maybe you want to do something like this:
+
+```css
+#header {
+  padding-top: calc(var(--safe-area-inset-top) + 1rem);
+}
+```
+
+> [!IMPORTANT]
+> It's important to note that the used CSS variables are `var(--safe-area-inset-*)` and not `env(safe-area-inset-*)`.
+> Unfortunately it's not (yet) possible to override the native `env(` variables. So therefore custom variables are injected instead.
 
 ## API
 
