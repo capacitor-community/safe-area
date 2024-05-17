@@ -86,11 +86,13 @@ npx cap sync
 import { SafeArea } from '@capacitor-community/safe-area';
 
 SafeArea.enable({
-  customColorsForSystemBars: true,
-  statusBarColor: '#00000000', // transparent
-  statusBarContent: 'light',
-  navigationBarColor: '#00000000', // transparent
-  navigationBarContent: 'light',
+  config: {
+    customColorsForSystemBars: true,
+    statusBarColor: '#00000000', // transparent
+    statusBarContent: 'light',
+    navigationBarColor: '#00000000', // transparent
+    navigationBarContent: 'light',
+  },
 });
 ```
 
