@@ -20,7 +20,7 @@ class SafeAreaPlugin : Plugin() {
         }
     }
 
-    @PluginMethod
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     fun enable(call: PluginCall) {
         val jsonObject = call.getObject("config")
 
@@ -30,11 +30,15 @@ class SafeAreaPlugin : Plugin() {
 
         val appearanceConfig = AppearanceConfig(jsonObject)
         implementation?.enable(true, appearanceConfig)
+
+        call.resolve()
     }
 
-    @PluginMethod
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     fun disable(call: PluginCall) {
         val appearanceConfig = AppearanceConfig(call.getObject("config"))
         implementation?.disable(appearanceConfig)
+
+        call.resolve()
     }
 }
