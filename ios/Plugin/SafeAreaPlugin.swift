@@ -8,10 +8,10 @@ import Capacitor
 @objc(SafeAreaPlugin)
 public class SafeAreaPlugin: CAPPlugin {
     @objc func enable(_ call: CAPPluginCall) {
-        call.unimplemented("Not implemented on iOS.")
+        call.resolve()
     }
 
     @objc func disable(_ call: CAPPluginCall) {
-        call.unimplemented("Not implemented on iOS.")
+        call.resolve()
     }
 }

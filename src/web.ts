@@ -5,11 +5,11 @@ import type { Config, SafeAreaPlugin } from './definitions';
 export class SafeAreaWeb extends WebPlugin implements SafeAreaPlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async enable(_options: { config: Config }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    return;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async disable(_options: { config: Config }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    return;
   }
 }
