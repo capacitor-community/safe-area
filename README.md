@@ -156,9 +156,9 @@ Calling `initialize` will set initial safe area values. It will inject `var(--sa
 
 <docgen-index>
 
-- [`enable(...)`](#enable)
-- [`disable(...)`](#disable)
-- [Interfaces](#interfaces)
+* [`enable(...)`](#enable)
+* [`disable(...)`](#disable)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -175,7 +175,8 @@ enable(options: { config: Config; }) => Promise<void>
 | ------------- | ------------------------------------------------------ |
 | **`options`** | <code>{ config: <a href="#config">Config</a>; }</code> |
 
----
+--------------------
+
 
 ### disable(...)
 
@@ -187,9 +188,11 @@ disable(options: { config: Config; }) => Promise<void>
 | ------------- | ------------------------------------------------------ |
 | **`options`** | <code>{ config: <a href="#config">Config</a>; }</code> |
 
----
+--------------------
+
 
 ### Interfaces
+
 
 #### Config
 
@@ -231,10 +234,10 @@ In `capacitor.config.json`:
     "SafeArea": {
       "enabled": true,
       "customColorsForSystemBars": true,
-      "statusBarColor": "#000000",
-      "statusBarContent": "light",
-      "navigationBarColor": "#000000",
-      "navigationBarContent": "light",
+      "statusBarColor": '#000000',
+      "statusBarContent": 'light',
+      "navigationBarColor": '#000000',
+      "navigationBarContent": 'light',
       "offset": 0
     }
   }

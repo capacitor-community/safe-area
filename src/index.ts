@@ -27,7 +27,7 @@ function setProperty(position: 'top' | 'left' | 'bottom' | 'right') {
  * So if you're using this plugin in an SSR environment,
  * you should call this method as soon as `window.document` becomes available.
  */
-function initialize() {
+function initialize(): void {
   setProperty('top');
   setProperty('left');
   setProperty('bottom');
