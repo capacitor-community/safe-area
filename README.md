@@ -82,9 +82,11 @@ npx cap sync
 
 ## Usage
 
+### Enabling the plugin
+
 This plugin can be enabled either by using the API or by using the Configuration. It's also possible to combine those two.
 
-### Using the API
+#### Enable by using the API
 
 ```ts
 import { SafeArea } from '@capacitor-community/safe-area';
@@ -100,7 +102,7 @@ SafeArea.enable({
 });
 ```
 
-### Using the Configuration
+#### Enable by using the Configuration
 
 See the [Configuration documentation below](#examples) for examples.
 
@@ -114,7 +116,7 @@ See the [Configuration documentation below](#examples) for examples.
 
 ### Using the CSS variables
 
-Having done this, the plugin will inject the correct safe area insets as CSS variables to the browser. This enables you to use those variables inside your CSS. You're now able to do this for example:
+Having enabled the plugin, it will inject the correct safe area insets as CSS variables to the browser. This enables you to use those variables inside your CSS. You're now able to do this for example:
 
 ```css
 #header {
@@ -134,13 +136,29 @@ Or maybe you want to do something like this:
 > It's important to note that the used CSS variables are `var(--safe-area-inset-*)` and not `env(safe-area-inset-*)`.
 > Unfortunately it's not (yet) possible to override the native `env(` variables. So therefore custom variables are injected instead.
 
+### Using the plugin in an SSR environment
+
+This plugin can be used in an SSR environment. But you should call manually call `initialize` like so:
+
+```ts
+import { initialize } from '@capacitor-community/safe-area';
+
+initialize();
+```
+
+Note that this step is only needed for users using this plugin in an SSR environment.
+
+#### Background information on calling `initialize`
+
+Calling `initialize` will set initial safe area values. It will inject `var(--safe-area-inset-*)` CSS variables with the values set to `max(env(safe-area-inset-*), 0px)` as properties to the document root. This makes sure the CSS variables can be used immediately and everywhere. This is especially important for Android when the plugin isn't enabled (yet) and always for web and iOS. Because otherwise - in those cases - `var(--safe-area-inset-*)` won't have any values.
+
 ## API
 
 <docgen-index>
 
-* [`enable(...)`](#enable)
-* [`disable(...)`](#disable)
-* [Interfaces](#interfaces)
+- [`enable(...)`](#enable)
+- [`disable(...)`](#disable)
+- [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -157,8 +175,7 @@ enable(options: { config: Config; }) => Promise<void>
 | ------------- | ------------------------------------------------------ |
 | **`options`** | <code>{ config: <a href="#config">Config</a>; }</code> |
 
---------------------
-
+---
 
 ### disable(...)
 
@@ -170,11 +187,9 @@ disable(options: { config: Config; }) => Promise<void>
 | ------------- | ------------------------------------------------------ |
 | **`options`** | <code>{ config: <a href="#config">Config</a>; }</code> |
 
---------------------
-
+---
 
 ### Interfaces
-
 
 #### Config
 
@@ -216,10 +231,10 @@ In `capacitor.config.json`:
     "SafeArea": {
       "enabled": true,
       "customColorsForSystemBars": true,
-      "statusBarColor": '#000000',
-      "statusBarContent": 'light',
-      "navigationBarColor": '#000000',
-      "navigationBarContent": 'light',
+      "statusBarColor": "#000000",
+      "statusBarContent": "light",
+      "navigationBarColor": "#000000",
+      "navigationBarContent": "light",
       "offset": 0
     }
   }
