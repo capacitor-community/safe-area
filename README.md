@@ -138,7 +138,7 @@ Or maybe you want to do something like this:
 
 ### Using the plugin in an SSR environment
 
-This plugin can be used in an SSR environment. But you should call manually call `initialize` like so:
+This plugin can be used in an SSR environment. But you should manually call `initialize` like so:
 
 ```ts
 import { initialize } from '@capacitor-community/safe-area';
