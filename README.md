@@ -15,9 +15,17 @@
 
 ## Introduction
 
-On web and iOS the safe area insets work out of the box. That is, on these platforms the `env(safe-area-inset-*)` CSS variables will have the correct values by default. On Android (in combination with Capacitor), however, those CSS variables will not have the correct values when Edge-to-Edge mode is enabled. So we need to work some magic in order to have access to the correct values. This plugin does that by detecting the safe area insets on Android, and injecting them as CSS variables to the browser. On web and iOS it will just fallback to the given values (which, again, are working out of the box).
+On web and iOS the safe area insets work out of the box<sup>1</sup>. That is, on these platforms the `env(safe-area-inset-*)` CSS variables will have the correct values by default. On Android (in combination with Capacitor), however, those CSS variables will not have the correct values when Edge-to-Edge mode is enabled. So we need to work some magic in order to have access to the correct values. This plugin does that by detecting the safe area insets on Android, and injecting them as CSS variables to the browser. On web and iOS it will just fallback to the given values (which, again, are working out of the box).
 
 There's one small but important quirck though, since we cannot override the native `env(safe-area-inset-*)` variables, the values are instead written to custom `var(--safe-area-inset-*)` variables.
+
+> [!NOTE] > <sup>1</sup> As with all web applications, you still need to enable the use the variables, by telling the browser to use the whole available space on the screen by adding a new viewport meta value:
+>
+> ```html
+> <meta name="viewport" content="viewport-fit=cover" />
+> ```
+>
+> More info on the [Mozilla website](https://developer.mozilla.org/en-US/docs/Web/CSS/env#usage)
 
 ### Edge-to-Edge
 
