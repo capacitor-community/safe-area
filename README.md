@@ -19,7 +19,8 @@ On web and iOS the safe area insets work out of the box<sup>1</sup>. That is, on
 
 There's one small but important quirck though, since we cannot override the native `env(safe-area-inset-*)` variables, the values are instead written to custom `var(--safe-area-inset-*)` variables.
 
-> [!NOTE] > <sup>1</sup> As with all web applications, you still need to enable the use the variables, by telling the browser to use the whole available space on the screen by adding a new viewport meta value:
+> [!NOTE]
+> <sup>1</sup> As with all web applications, you still need to enable the use the variables, by telling the browser to use the whole available space on the screen by adding a new viewport meta value:
 >
 > ```html
 > <meta name="viewport" content="viewport-fit=cover" />
