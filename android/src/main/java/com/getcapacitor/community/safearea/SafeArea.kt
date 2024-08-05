@@ -8,10 +8,13 @@ import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import java.util.regex.Matcher
 
 class SafeArea(private val activity: Activity, private val webView: WebView) {
     var offset = 0
     private var appearanceUpdatedInListener = false
+    private var webViewVersion = initWebViewVersion();
+    private var renderFunction = initRenderFunction();
 
     fun enable(updateInsets: Boolean, appearanceConfig: AppearanceConfig) {
         activity.window.decorView.getRootView().setOnApplyWindowInsetsListener { view, insets ->
@@ -105,7 +108,26 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
     private fun setProperty(position: String, size: Int) {
         activity.runOnUiThread {
-            webView.loadUrl("javascript:document.querySelector(':root')?.style.setProperty('--safe-area-inset-" + position + "', 'max(env(safe-area-inset-" + position + "), " + size + "px)');void(0);")
+            webView.loadUrl(renderFunction(position, size))
         }
+    }
+
+    private fun initRenderFunction(): (position: String, size: Int) -> String  {
+        val x = webViewVersion
+        return when {
+            // Before env or max where supported
+            (x in 55..79) -> { position: String, size: Int -> "javascript:(function() { var _a; if (typeof document !== 'undefined') {(_a = document.querySelector(':root')) === null || _a === void 0 ? void 0 : _a.style.setProperty('--safe-area-inset-" + position + "', '" + size + "px)');}})"}
+            (x >= 80) -> { position: String, size: Int -> "javascript:document.querySelector(':root')?.style.setProperty('--safe-area-inset-" + position + "', 'max(env(safe-area-inset-" + position + "), " + size + "px)');void(0);"}
+            else -> {
+                throw Error();
+            }
+        }
+    }
+
+    private fun initWebViewVersion(): Int {
+        val regex = Regex("Chrome/([\\d.]+)")
+        val matchResult = regex.find(webView.settings.userAgentString)
+
+        return matchResult?.groups?.get(1)?.value?.toInt() ?: 55
     }
 }
