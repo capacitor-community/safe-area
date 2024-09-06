@@ -88,7 +88,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             // To get the actual height of the keyboard, we need to subtract the height of the system bars from the height of the ime
             // Source: https://stackoverflow.com/a/75328335/8634342
-            val imeHeight = imeInsets.bottom - systemBarsInsets.bottom
+            val imeHeight = (imeInsets.bottom - systemBarsInsets.bottom).coerceAtLeast(0)
 
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
