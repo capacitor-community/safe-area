@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 class SafeArea(private val activity: Activity, private val webView: WebView) {
     var offset = 0
     private var appearanceUpdatedInListener = false
-    private var nonce: Boolean = true
+    private var decorateNonce: Boolean = true
 
     fun enable(updateInsets: Boolean, appearanceConfig: AppearanceConfig) {
         activity.window.decorView.getRootView().setOnApplyWindowInsetsListener { view, insets ->
@@ -29,6 +29,7 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
             view.onApplyWindowInsets(insets)
         }
 
+        resetDecorations()
         updateAppearance(appearanceConfig)
 
         if (updateInsets) {
@@ -44,6 +45,10 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
         resetProperties()
 
         updateAppearance(appearanceConfig)
+    }
+
+    fun resetDecorations() {
+        decorateNonce = true
     }
 
     private fun updateAppearance(appearanceConfig: AppearanceConfig) {
@@ -69,8 +74,8 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
     private fun updateInsets() {
         activity.runOnUiThread {
-            if (nonce) {
-                nonce = false
+            if (decorateNonce) {
+                decorateNonce = false
                 WindowCompat.setDecorFitsSystemWindows(activity.window, false)
             }
 
