@@ -21,7 +21,7 @@ class SafeAreaPlugin : Plugin() {
     }
 
     override fun handleOnPause() {
-        implementation?.resetDecorations()
+        implementation?.resetDecorFitsSystemWindows()
         super.handleOnPause()
     }
 
