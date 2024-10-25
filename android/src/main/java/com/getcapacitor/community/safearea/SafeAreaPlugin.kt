@@ -20,6 +20,11 @@ class SafeAreaPlugin : Plugin() {
         }
     }
 
+    override fun handleOnPause() {
+        implementation?.resetDecorFitsSystemWindows()
+        super.handleOnPause()
+    }
+
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     fun enable(call: PluginCall) {
         val jsonObject = call.getObject("config")
