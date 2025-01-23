@@ -145,6 +145,11 @@ Or maybe you want to do something like this:
 > It's important to note that the used CSS variables are `var(--safe-area-inset-*)` and not `env(safe-area-inset-*)`.
 > Unfortunately it's not (yet) possible to override the native `env(` variables. So therefore custom variables are injected instead.
 
+> [!NOTE]
+> On web and iOS both `var(--safe-area-inset-*)` and `env(safe-area-inset-*)` variables will be available.
+> It's recommended to only use `var(--safe-area-inset-*)` for consistency though.
+> The initialize call will make sure those variables are available on all platforms, including web and iOS.
+
 ### Using the plugin in an SSR environment
 
 This plugin can be used in an SSR environment. But you should manually call `initialize` like so:
