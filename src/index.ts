@@ -3,17 +3,14 @@ import { registerPlugin } from '@capacitor/core';
 import type { SafeAreaPlugin } from './definitions';
 
 const SafeArea = registerPlugin<SafeAreaPlugin>('SafeArea', {
-  web: () => import('./web').then(m => new m.SafeAreaWeb()),
+  web: () => import('./web').then((m) => new m.SafeAreaWeb()),
 });
 
 function setProperty(position: 'top' | 'left' | 'bottom' | 'right') {
   if (typeof document !== 'undefined') {
     document
       .querySelector<HTMLElement>(':root')
-      ?.style.setProperty(
-        `--safe-area-inset-${position}`,
-        `max(env(safe-area-inset-${position}), 0px)`,
-      );
+      ?.style.setProperty(`--safe-area-inset-${position}`, `max(env(safe-area-inset-${position}), 0px)`);
   }
 }
 
