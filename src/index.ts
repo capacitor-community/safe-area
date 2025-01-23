@@ -8,9 +8,17 @@ const SafeArea = registerPlugin<SafeAreaPlugin>('SafeArea', {
 
 function setProperty(position: 'top' | 'left' | 'bottom' | 'right') {
   if (typeof document !== 'undefined') {
-    document
-      .querySelector<HTMLElement>(':root')
-      ?.style.setProperty(`--safe-area-inset-${position}`, `max(env(safe-area-inset-${position}), 0px)`);
+    const rootStyle = document.querySelector<HTMLElement>(':root')?.style;
+
+    const currentValue = rootStyle?.getPropertyValue(`--safe-area-inset-${position}`);
+
+    if (!currentValue) {
+      // If a value is already present,
+      // we can assume we do not have to set an initial value.
+      // Probably the native code has already set a property.
+      // Otherwise the developer or another plugin has set this value.
+      rootStyle?.setProperty(`--safe-area-inset-${position}`, `max(env(safe-area-inset-${position}), 0px)`);
+    }
   }
 }
 
