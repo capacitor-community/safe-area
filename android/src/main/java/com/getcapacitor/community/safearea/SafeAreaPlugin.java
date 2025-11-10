@@ -45,7 +45,7 @@ public class SafeAreaPlugin extends Plugin {
     // https://issues.chromium.org/issues/457682720
     private static final int WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX = 144;
 
-    private boolean hasMetaViewportCover = false;
+    private boolean hasMetaViewportCover = true;
 
     @Override
     public void load() {
