@@ -46,12 +46,15 @@ public class SafeAreaPlugin extends Plugin {
     private static final int WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX = 144;
 
     private boolean hasMetaViewportCover = true;
+    private boolean offsetForKeyboardInsetBug = false;
 
     @Override
     public void load() {
         super.load();
 
         webViewMajorVersion = getWebViewMajorVersion();
+
+        offsetForKeyboardInsetBug = getConfig().getConfigJSON().optBoolean("offsetForKeyboardInsetBug", false);
 
         this.bridge.getWebView().evaluateJavascript(viewportMetaJSFunction, (res) -> {
             // @TODO: this doesn't work yet.
@@ -148,7 +151,7 @@ public class SafeAreaPlugin extends Plugin {
         // Shrink the view so that it's shown in the area available right above the IME
         int bottomMargin = imeInsets.bottom;
 
-        if (systemBarsInsets.bottom > 0 && webViewMajorVersion < WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX) {
+        if (offsetForKeyboardInsetBug && systemBarsInsets.bottom > 0 && webViewMajorVersion < WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX) {
             // https://issues.chromium.org/issues/457682720
             // this is a workaround to push the webview behind the keyboard for webview versions that have a bug
             // that causes the bottom inset to be incorrect if the IME is visible
