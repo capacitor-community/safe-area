@@ -16,6 +16,8 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.webkit.WebViewCompat;
 
 import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 import java.util.regex.Matcher;
@@ -176,9 +178,22 @@ public class SafeAreaPlugin extends Plugin {
         DARK
     }
 
+    @PluginMethod
+    public void setSystemBarStyle(PluginCall call) {
+        String style = call.getString("style", "LIGHT");
 
-    public static void setSystemBarsStyle(Activity activity, SystemBarsStyle style) {
-        // @TODO: calling this method from within the plugin context unfortunately doesn't work for some reason. For now we need to do that in the `MainActivity` instead.
+        Activity activity = getActivity();
+        SafeAreaPlugin.SystemBarsStyle barsStyle = style.equalsIgnoreCase("DARK")
+            ? SafeAreaPlugin.SystemBarsStyle.DARK
+            : SafeAreaPlugin.SystemBarsStyle.LIGHT;
+
+        SafeAreaPlugin.setSystemBarsStyle(activity, barsStyle);
+        call.resolve();
+    }
+
+
+  public static void setSystemBarsStyle(Activity activity, SystemBarsStyle style) {
+    activity.runOnUiThread(() -> {
         Window window = activity.getWindow();
         WindowInsetsControllerCompat windowInsetsControllerCompat = WindowCompat.getInsetsController(window, window.getDecorView());
         if (style == SystemBarsStyle.DARK) {
@@ -190,6 +205,8 @@ public class SafeAreaPlugin extends Plugin {
             windowInsetsControllerCompat.setAppearanceLightStatusBars(true);
             window.getDecorView().setBackgroundColor(Color.WHITE);
         }
-    }
+    });
+}
+
 }
 
