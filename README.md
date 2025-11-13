@@ -78,7 +78,7 @@ The keyboard plugin by Capacitor has a configuration prop called `resizeOnFullSc
 
 ### `@capacitor/status-bar`
 
-This plugin is not (yet) tested for use in combination with the status bar plugin. Ideally you should refrain from using it. Just using the `StatusBar.setStyle` should be safe though.
+When using `@capacitor-community/safe-area`, you should uninstall `@capacitor/status-bar`. Instead you can use the [System Bars API](#system-bars-api) this plugin provides.
 
 ### `adjustMarginsForEdgeToEdge` setting
 
@@ -100,7 +100,19 @@ When this plugin is installed, edge-to-edge mode is always enabled. Regardless o
 
 ### Future work
 
-The Capacitor team themselves are also working on a [similar solution](https://github.com/ionic-team/capacitor/pull/8180). It's still a work in progress though. You should be aware that you might have to migrate once they've integrated that PR into their codebase.
+The Capacitor team themselves are also working on a [similar solution](https://github.com/ionic-team/capacitor/pull/8180). It's still a work in progress though. Currently that PR is merged as is and in a beta state. Their design/approach philosophy also deviates from the one in this plugin. The main differences are as follows:
+
+|                                                          | Community Safe Area Plugin                          | Capacitor System Bars Plugin                                                                                                                                                                     |
+| -------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Supported Capacitor versions                             | ✅ v7+                                              | ⚠️ v8+                                                                                                                                                                                           |
+| Fallback for broken webviews                             | ✅ Margins (does not require extra work)            | ⚠️ Custom CSS vars (requires extra work and is more prone to future bugs)                                                                                                                        |
+| Workaround for keyboard bug<sup>2</sup>                  | ✅ Working out of the box                           | ⚠️ Requires installing `@capacitor/keyboard` and setting `resizeOnFullScreen`. Their workaround also still has [bugs](https://github.com/ionic-team/capacitor/pull/8180#issuecomment-3512336606) |
+| Optional workaround for another keyboard bug<sup>3</sup> | ✅ Can be enabled using `offsetForKeyboardInsetBug` | ❌                                                                                                                                                                                               |
+
+<sup>2</sup> The webview has a known bug to not resize the webview when the keyboard is shown.
+
+<sup>3</sup> The webview has [another known bug](https://issues.chromium.org/issues/457682720) to not properly report
+bottom insets. Which will be fixed in Chromium 144
 
 ## Config
 
@@ -144,3 +156,90 @@ export default config;
 ```
 
 </docgen-config>
+
+## System Bars API
+
+This plugin provides a few helper methods for styling the system bars. It's designed to be a partial drop-in replacement for the `@capacitor/status-bar` plugin. It doesn't support a few things, like `setOverlaysWebView` for example, as those aren't applicable when handling the safe areas using insets.
+
+<docgen-index>
+
+- [`setSystemBarsStyle(...)`](#setsystembarsstyle)
+- [`showSystemBars(...)`](#showsystembars)
+- [`hideSystemBars(...)`](#hidesystembars)
+- [Interfaces](#interfaces)
+- [Enums](#enums)
+
+</docgen-index>
+
+<docgen-api>
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### setSystemBarsStyle(...)
+
+```typescript
+setSystemBarsStyle(options: SystemBarsStyleOptions) => Promise<void>
+```
+
+| Param         | Type                                                                      |
+| ------------- | ------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#systembarsstyleoptions">SystemBarsStyleOptions</a></code> |
+
+---
+
+### showSystemBars(...)
+
+```typescript
+showSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
+```
+
+| Param         | Type                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#systembarsvisibilityoptions">SystemBarsVisibilityOptions</a></code> |
+
+---
+
+### hideSystemBars(...)
+
+```typescript
+hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
+```
+
+| Param         | Type                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#systembarsvisibilityoptions">SystemBarsVisibilityOptions</a></code> |
+
+---
+
+### Interfaces
+
+#### SystemBarsStyleOptions
+
+| Prop        | Type                                                        | Description                                                                                                                                                                                                                   | Default                |
+| ----------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **`style`** | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Style of the content of the system bars.                                                                                                                                                                                      | <code>'DEFAULT'</code> |
+| **`type`**  | <code><a href="#systembarstype">SystemBarsType</a></code>   | The system bar to which to apply the style. Providing `null` means it will be applied to both system bars. On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box. | <code>null</code>      |
+
+#### SystemBarsVisibilityOptions
+
+| Prop       | Type                                                      | Description                                                                             | Default           |
+| ---------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------- |
+| **`type`** | <code><a href="#systembarstype">SystemBarsType</a></code> | The system bar to hide or show. Providing `null` means it will toggle both system bars. | <code>null</code> |
+
+### Enums
+
+#### SystemBarsStyle
+
+| Members       | Value                  | Description                                                                                                                                                                                                              |
+| ------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`Dark`**    | <code>'DARK'</code>    | Light system bar content on a dark background.                                                                                                                                                                           |
+| **`Light`**   | <code>'LIGHT'</code>   | For dark system bar content on a light background.                                                                                                                                                                       |
+| **`Default`** | <code>'DEFAULT'</code> | The style is based on the device appearance or the underlying content. If the device is using dark mode, the system bars content will be light. If the device is using light mode, the system bars content will be dark. |
+
+#### SystemBarsType
+
+| Members             | Value                         | Description                                                                                                                                           |
+| ------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`StatusBar`**     | <code>'STATUS_BAR'</code>     | The top status bar on both Android and iOS.                                                                                                           |
+| **`NavigationBar`** | <code>'NAVIGATION_BAR'</code> | The navigation bar on both Android and iOS. On iOS this is the "home indicator". On Android this is either the "navigation bar" or the "gesture bar". |
+
+</docgen-api>
