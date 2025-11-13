@@ -62,11 +62,7 @@ class MainActivity : BridgeActivity() {
 }
 ```
 
-Additionally this plugin provides a helper method to style the system bars and its content. Currently, this only works by calling it from the `MainActivity`. For example:
-
-```kotlin
-SafeAreaPlugin.setSystemBarsStyle(this, SafeAreaPlugin.SystemBarsStyle.DARK)
-```
+Additionally this plugin provides helper methods to style the system bars and its content. You can find the API docs [here](#system-bars-api).
 
 ## Quirks
 
