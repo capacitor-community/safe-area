@@ -193,7 +193,7 @@ public class SafeAreaPlugin extends Plugin {
             try {
                 return SystemBarsStyle.valueOf(value.toUpperCase(Locale.US));
             } catch (IllegalArgumentException error) {
-                // invalid style value
+                // invalid value
             }
         }
 
@@ -216,7 +216,7 @@ public class SafeAreaPlugin extends Plugin {
             try {
                 return SystemBarsType.valueOf(value.toUpperCase(Locale.US));
             } catch (IllegalArgumentException error) {
-                // invalid style value
+                // invalid value
             }
         }
 
