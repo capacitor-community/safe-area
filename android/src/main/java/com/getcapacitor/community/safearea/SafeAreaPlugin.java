@@ -2,11 +2,13 @@ package com.getcapacitor.community.safearea;
 
 import android.app.Activity;
 import android.content.pm.PackageInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,8 +18,11 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.webkit.WebViewCompat;
 
 import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -172,24 +177,141 @@ public class SafeAreaPlugin extends Plugin {
     }
 
     public enum SystemBarsStyle {
-        LIGHT,
-        DARK
+        DARK("DARK"),
+        LIGHT("LIGHT"),
+        DEFAULT("DEFAULT");
+
+        public final String value;
+
+        SystemBarsStyle(String value) {
+            this.value = value;
+        }
     }
 
+    private @NonNull SystemBarsStyle getSystemBarsStyleFromString(@Nullable String value) {
+        if (value != null) {
+            try {
+                return SystemBarsStyle.valueOf(value.toUpperCase(Locale.US));
+            } catch (IllegalArgumentException error) {
+                // invalid value
+            }
+        }
+
+        return SystemBarsStyle.DEFAULT;
+    }
+
+    public enum SystemBarsType {
+        STATUS_BAR("STATUS_BAR"),
+        NAVIGATION_BAR("NAVIGATION_BAR");
+
+        public final String value;
+
+        SystemBarsType(String value) {
+            this.value = value;
+        }
+    }
+
+    private @Nullable SystemBarsType getSystemBarsTypeFromString(@Nullable String value) {
+        if (value != null) {
+            try {
+                return SystemBarsType.valueOf(value.toUpperCase(Locale.US));
+            } catch (IllegalArgumentException error) {
+                // invalid value
+            }
+        }
+
+        return null;
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void setSystemBarsStyle(final PluginCall call) {
+        String style = call.getString("style");
+        String type = call.getString("type");
+
+        SystemBarsStyle systemBarsStyle = getSystemBarsStyleFromString(style);
+        SystemBarsType systemBarsType = getSystemBarsTypeFromString(type);
+
+        getBridge().executeOnMainThread(() -> {
+            setSystemBarsStyle(getActivity(), systemBarsStyle, systemBarsType);
+            call.resolve();
+        });
+    }
 
     public static void setSystemBarsStyle(Activity activity, SystemBarsStyle style) {
-        // @TODO: calling this method from within the plugin context unfortunately doesn't work for some reason. For now we need to do that in the `MainActivity` instead.
+        setSystemBarsStyle(activity, style, null);
+    }
+
+    public static void setSystemBarsStyle(Activity activity, SystemBarsStyle style, @Nullable SystemBarsType type) {
+        if (style == SystemBarsStyle.DEFAULT) {
+            style = getStyleForTheme(activity);
+        }
+
         Window window = activity.getWindow();
         WindowInsetsControllerCompat windowInsetsControllerCompat = WindowCompat.getInsetsController(window, window.getDecorView());
+        if (type == null || type == SystemBarsType.STATUS_BAR) {
+            windowInsetsControllerCompat.setAppearanceLightStatusBars(style != SystemBarsStyle.DARK);
+        }
+
+        if (type == null || type == SystemBarsType.NAVIGATION_BAR) {
+            windowInsetsControllerCompat.setAppearanceLightNavigationBars(style != SystemBarsStyle.DARK);
+        }
+
         if (style == SystemBarsStyle.DARK) {
-            windowInsetsControllerCompat.setAppearanceLightNavigationBars(false);
-            windowInsetsControllerCompat.setAppearanceLightStatusBars(false);
             window.getDecorView().setBackgroundColor(Color.BLACK);
         } else {
-            windowInsetsControllerCompat.setAppearanceLightNavigationBars(true);
-            windowInsetsControllerCompat.setAppearanceLightStatusBars(true);
             window.getDecorView().setBackgroundColor(Color.WHITE);
         }
     }
-}
 
+    private static SystemBarsStyle getStyleForTheme(Activity activity) {
+        int currentNightMode = activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (currentNightMode != Configuration.UI_MODE_NIGHT_YES) {
+            return SystemBarsStyle.LIGHT;
+        }
+        return SystemBarsStyle.DARK;
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void showSystemBars(final PluginCall call) {
+        String type = call.getString("type");
+        SystemBarsType systemBarsType = getSystemBarsTypeFromString(type);
+
+        getBridge().executeOnMainThread(() -> {
+            setSystemBarsHidden(false, systemBarsType);
+            call.resolve();
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void hideSystemBars(final PluginCall call) {
+        String type = call.getString("type");
+        SystemBarsType systemBarsType = getSystemBarsTypeFromString(type);
+
+        getBridge().executeOnMainThread(() -> {
+            setSystemBarsHidden(true, systemBarsType);
+            call.resolve();
+        });
+    }
+
+    private void setSystemBarsHidden(Boolean hidden, @Nullable SystemBarsType type) {
+        Window window = getActivity().getWindow();
+        WindowInsetsControllerCompat windowInsetsControllerCompat = WindowCompat.getInsetsController(window, window.getDecorView());
+
+        if (hidden) {
+            if (type == null || type == SystemBarsType.STATUS_BAR) {
+                windowInsetsControllerCompat.hide(WindowInsetsCompat.Type.statusBars());
+            }
+            if (type == null || type == SystemBarsType.NAVIGATION_BAR) {
+                windowInsetsControllerCompat.hide(WindowInsetsCompat.Type.navigationBars());
+            }
+            return;
+        }
+
+        if (type == null || type == SystemBarsType.STATUS_BAR) {
+            windowInsetsControllerCompat.show(WindowInsetsCompat.Type.systemBars());
+        }
+        if (type == null || type == SystemBarsType.NAVIGATION_BAR) {
+            windowInsetsControllerCompat.show(WindowInsetsCompat.Type.navigationBars());
+        }
+    }
+}
