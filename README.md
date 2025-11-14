@@ -94,21 +94,29 @@ There's a known Chromium bug that makes the webview report the bottom inset as m
 
 When this plugin is installed, edge-to-edge mode is always enabled. Regardless of any other setting (except for broken webview versions of course). This means that the `viewport-fit=cover` tag is also not respected. So you should make sure any content loaded into the webview handles the `env(safe-area-inset-*)` accordingly. This is a known shortcoming of this plugin currently. I'm looking for ways to fix this, but haven't yet come up with a solution. For most use cases this shouldn't be a problem though. As most apps either do or don't support edge-to-edge. PRs to fix this are warmly welcomed!
 
-### Future work
+### Differences between this plugin, `system-bars` and `status-bar`
 
-The Capacitor team themselves are also working on a [similar solution](https://github.com/ionic-team/capacitor/pull/8180). It's still a work in progress though. Currently that PR is merged as is and in a beta state. Their design/approach philosophy also deviates from the one in this plugin. The main differences are as follows:
+The main differences are as follows:
 
-|                                                          | Community Safe Area Plugin                          | Capacitor System Bars Plugin                                                                                                                                                                     |
-| -------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Supported Capacitor versions                             | ✅ v7+                                              | ⚠️ v8+                                                                                                                                                                                           |
-| Fallback for broken webviews                             | ✅ Margins (does not require extra work)            | ⚠️ Custom CSS vars (requires extra work and is more prone to future bugs)                                                                                                                        |
-| Workaround for keyboard bug<sup>2</sup>                  | ✅ Working out of the box                           | ⚠️ Requires installing `@capacitor/keyboard` and setting `resizeOnFullScreen`. Their workaround also still has [bugs](https://github.com/ionic-team/capacitor/pull/8180#issuecomment-3512336606) |
-| Optional workaround for another keyboard bug<sup>3</sup> | ✅ Can be enabled using `offsetForKeyboardInsetBug` | ❌                                                                                                                                                                                               |
+|                                                          | [`@capacitor-community/safe-area`](https://github.com/capacitor-community/safe-area) | [`CapacitorSystemBars`](https://github.com/ionic-team/capacitor/blob/main/core/systembars.md)<sup>5</sup>                                                                                        | [`@capacitor/status-bar`](https://capacitorjs.com/docs/apis/status-bar) |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Supported Capacitor versions                             | ✅ v7+                                                                               | ⚠️ v8+                                                                                                                                                                                           | ✅ v7+                                                                  |
+| Enables Edge to Edge functionality                       | ✅                                                                                   | ✅                                                                                                                                                                                               | ❌                                                                      |
+| Fallback for broken webviews<sup>2</sup>                 | ✅ Margins (does not require extra work)                                             | ⚠️ Custom CSS vars (requires extra work and is more prone to future bugs)                                                                                                                        | ❌                                                                      |
+| Workaround for keyboard bug<sup>3</sup>                  | ✅ Working out of the box                                                            | ⚠️ Requires installing `@capacitor/keyboard` and setting `resizeOnFullScreen`. Their workaround also still has [bugs](https://github.com/ionic-team/capacitor/pull/8180#issuecomment-3512336606) | ❌                                                                      |
+| Optional workaround for another keyboard bug<sup>4</sup> | ✅ Can be enabled using `offsetForKeyboardInsetBug`                                  | ❌                                                                                                                                                                                               | ❌                                                                      |
 
-<sup>2</sup> The webview has a known bug to not resize the webview when the keyboard is shown.
+<sup>2</sup> Chromium versions < 140 do not correctly report safe area insets. So we need a workaround for those webviews. This can be done using margins or custom CSS vars. This plugin advocates for using margins. As it seems to be the least breaking behavior.
 
-<sup>3</sup> The webview has [another known bug](https://issues.chromium.org/issues/457682720) to not properly report
+<sup>3</sup> The webview has a known bug to not resize the webview when the keyboard is shown.
+
+<sup>4</sup> The webview has [another known bug](https://issues.chromium.org/issues/457682720) to not properly report
 bottom insets. Which will be fixed in Chromium 144
+
+<sup>5</sup> The Capacitor team themselves are also working on a [similar
+solution](https://github.com/ionic-team/capacitor/pull/8180) by means of a `CapacitorSystemBars` plugin. It's still a
+work in progress though. Currently that PR is merged as is and in a beta state. Their design/approach philosophy also
+deviates from the one in this plugin.
 
 ## Config
 
