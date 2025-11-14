@@ -157,6 +157,17 @@ export default config;
 
 This plugin provides a few helper methods for styling the system bars. It's designed to be a partial drop-in replacement for the `@capacitor/status-bar` plugin. It doesn't support a few things, like `setOverlaysWebView` for example, as those aren't applicable when handling the safe areas using insets.
 
+### iOS Note
+
+This API requires "View controller-based status bar appearance"
+(`UIViewControllerBasedStatusBarAppearance`) set to `YES` in `Info.plist`. Read
+about [Configuring iOS](https://capacitorjs.com/docs/ios/configuration) for
+help.
+
+The status bar visibility defaults to visible and the style defaults to
+[`UIStatusBarStyle.default`](https://developer.apple.com/documentation/uikit/uistatusbarstyle/default). You can change these defaults by adding
+[`UIStatusBarHidden`](https://developer.apple.com/documentation/bundleresources/information-property-list/uistatusbarhidden) and/or [`UIStatusBarStyle`](https://developer.apple.com/documentation/uikit/uistatusbarstyle) in `Info.plist`.
+
 <docgen-index>
 
 - [`setSystemBarsStyle(...)`](#setsystembarsstyle)
