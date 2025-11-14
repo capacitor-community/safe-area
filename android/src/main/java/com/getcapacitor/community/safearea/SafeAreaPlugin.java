@@ -104,8 +104,7 @@ public class SafeAreaPlugin extends Plugin {
                 setViewMargin(parent, 0, 0, 0, 0);
 
                 // We need to correct for a possible shown IME
-                // NOTE: using `getBridge().getWebView()` instead of `parent` here, to prevent infinite loops
-                setViewMargin(getBridge().getWebView(), 0, 0, getBottomMargin(windowInsets, parent), 0);
+                v.setPadding(0, 0, 0, getBottomPadding(windowInsets, parent));
 
                 return windowInsets;
             }
@@ -144,7 +143,7 @@ public class SafeAreaPlugin extends Plugin {
         view.setLayoutParams(mlp);
     }
 
-    private int getBottomMargin(WindowInsetsCompat windowInsets, View parent) {
+    private int getBottomPadding(WindowInsetsCompat windowInsets, View parent) {
         Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
         Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
         boolean keyboardVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
@@ -154,26 +153,26 @@ public class SafeAreaPlugin extends Plugin {
         }
 
         // Shrink the view so that it's shown in the area available right above the IME
-        int bottomMargin = imeInsets.bottom;
+        int bottom = imeInsets.bottom;
 
         if (offsetForKeyboardInsetBug && systemBarsInsets.bottom > 0 && webViewMajorVersion < WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX) {
             // https://issues.chromium.org/issues/457682720
             // this is a workaround to push the webview behind the keyboard for webview versions that have a bug
             // that causes the bottom inset to be incorrect if the IME is visible
-            bottomMargin = imeInsets.bottom - systemBarsInsets.bottom;
+            bottom = imeInsets.bottom - systemBarsInsets.bottom;
         }
 
-        if (bottomMargin > parent.getHeight()) {
+        if (bottom > parent.getHeight()) {
             // This is needed to workaround a bug that when an IME is visible before app start,
             // setting the MarginLayoutParams causes issues.
-            bottomMargin = parent.getHeight();
+            bottom = parent.getHeight();
         }
 
-        if (bottomMargin < 0) {
-            bottomMargin = 0;
+        if (bottom < 0) {
+            bottom = 0;
         }
 
-        return bottomMargin;
+        return bottom;
     }
 
     public enum SystemBarsStyle {
