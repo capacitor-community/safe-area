@@ -104,7 +104,7 @@ public class SafeAreaPlugin extends Plugin {
                 setViewMargin(parent, 0, 0, 0, 0);
 
                 // We need to correct for a possible shown IME
-                v.setPadding(0, 0, 0, getBottomPadding(windowInsets, parent));
+                v.setPadding(0, 0, 0, getBottomPadding(windowInsets));
 
                 return windowInsets;
             }
@@ -143,7 +143,7 @@ public class SafeAreaPlugin extends Plugin {
         view.setLayoutParams(mlp);
     }
 
-    private int getBottomPadding(WindowInsetsCompat windowInsets, View parent) {
+    private int getBottomPadding(WindowInsetsCompat windowInsets) {
         Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
         Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
         boolean keyboardVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
@@ -160,12 +160,6 @@ public class SafeAreaPlugin extends Plugin {
             // this is a workaround to push the webview behind the keyboard for webview versions that have a bug
             // that causes the bottom inset to be incorrect if the IME is visible
             bottom = imeInsets.bottom - systemBarsInsets.bottom;
-        }
-
-        if (bottom > parent.getHeight()) {
-            // This is needed to workaround a bug that when an IME is visible before app start,
-            // setting the MarginLayoutParams causes issues.
-            bottom = parent.getHeight();
         }
 
         if (bottom < 0) {
