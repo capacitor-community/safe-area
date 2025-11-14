@@ -162,12 +162,6 @@ public class SafeAreaPlugin extends Plugin {
             bottom = imeInsets.bottom - systemBarsInsets.bottom;
         }
 
-        if (bottom > parent.getHeight()) {
-            // This is needed to workaround a bug that when an IME is visible before app start,
-            // setting the MarginLayoutParams causes issues.
-            bottom = parent.getHeight();
-        }
-
         if (bottom < 0) {
             bottom = 0;
         }
