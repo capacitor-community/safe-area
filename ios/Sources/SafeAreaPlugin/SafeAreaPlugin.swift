@@ -13,6 +13,17 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
 
     public private(set) var hideHomeIndicator: Bool = false
 
+    // Use an initial value of `nil`, so this plugin doesn't override any existing behavior by default
+    private var statusBarStyle: SystemBarsStyle? = nil;
+
+    override public func load() {
+        if let statusBarStyleString = getConfig().getString("statusBarStyle") {
+            statusBarStyle = getSystemBarsStyleFromString(statusBarStyleString)
+        }
+
+        updateSystemBarsStyle()
+    }
+
     enum SystemBarsStyle: String {
         case dark = "DARK"
         case light = "LIGHT"
@@ -35,11 +46,25 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func setSystemBarsStyle(_ call: CAPPluginCall) {
         let style = call.getString("style")
+        let type = call.getString("type")
 
         let systemBarsStyle = getSystemBarsStyleFromString(style)
+        let systemBarsType = getSystemBarsTypeFromString(type)
 
-        setSystemBarsStyle(style: systemBarsStyle)
+        if systemBarsType == nil || systemBarsType == SystemBarsType.statusBar {
+            statusBarStyle = systemBarsStyle
+        }
+
+        // home indicator cannot be styled on iOS, so we don't handle that here
+
+        updateSystemBarsStyle()
         call.resolve()
+    }
+
+    func updateSystemBarsStyle() {
+        if let statusBarStyle = statusBarStyle {
+            setSystemBarsStyle(style: statusBarStyle);
+        }
     }
 
     func setSystemBarsStyle(style: SystemBarsStyle) {

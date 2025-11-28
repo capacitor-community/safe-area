@@ -4,6 +4,22 @@ declare module '@capacitor/cli' {
   export interface PluginsConfig {
     SafeArea?: {
       /**
+       * Indicates which style to apply to the status bar initially.
+       *
+       * @default null
+       */
+      statusBarStyle?: SystemBarsStyle;
+
+      /**
+       * Indicates which style to apply to the navigation bar initially.
+       *
+       * On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box.
+       *
+       * @default null
+       */
+      navigationBarStyle?: SystemBarsStyle;
+
+      /**
        * @deprecated Setting this value is not necessary anymore, as it now works out of the box.
        */
       offsetForKeyboardInsetBug?: boolean;

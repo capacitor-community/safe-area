@@ -51,11 +51,29 @@ public class SafeAreaPlugin extends Plugin {
 
     private boolean hasMetaViewportCover = true;
 
+    // Use an initial value of `null`, so this plugin doesn't override any existing behavior by default
+    private SystemBarsStyle statusBarStyle = null;
+
+    // Use an initial value of `null`, so this plugin doesn't override any existing behavior by default
+    private SystemBarsStyle navigationBarStyle = null;
+
     @Override
     public void load() {
         super.load();
 
         webViewMajorVersion = getWebViewMajorVersion();
+
+        String statusBarStyleString = getConfig().getConfigJSON().optString("statusBarStyle");
+        if (!statusBarStyleString.isBlank()) {
+            statusBarStyle = getSystemBarsStyleFromString(statusBarStyleString);
+        }
+
+        String navigationBarStyleString = getConfig().getConfigJSON().optString("navigationBarStyle");
+        if (!navigationBarStyleString.isBlank()) {
+            navigationBarStyle = getSystemBarsStyleFromString(navigationBarStyleString);
+        }
+
+        updateSystemBarsStyle();
 
         this.bridge.getWebView().evaluateJavascript(viewportMetaJSFunction, (res) -> {
             // @TODO: this doesn't work yet.
@@ -199,10 +217,35 @@ public class SafeAreaPlugin extends Plugin {
         SystemBarsStyle systemBarsStyle = getSystemBarsStyleFromString(style);
         SystemBarsType systemBarsType = getSystemBarsTypeFromString(type);
 
+        if (systemBarsType == null || systemBarsType == SystemBarsType.STATUS_BAR) {
+            statusBarStyle = systemBarsStyle;
+        }
+
+        if (systemBarsType == null || systemBarsType == SystemBarsType.NAVIGATION_BAR) {
+            navigationBarStyle = systemBarsStyle;
+        }
+
         getBridge().executeOnMainThread(() -> {
-            setSystemBarsStyle(getActivity(), systemBarsStyle, systemBarsType);
+            updateSystemBarsStyle();
             call.resolve();
         });
+    }
+
+    @Override
+    protected void handleOnConfigurationChanged(Configuration newConfig) {
+        super.handleOnConfigurationChanged(newConfig);
+        getBridge().executeOnMainThread(() -> {
+            updateSystemBarsStyle();
+        });
+    }
+
+    private void updateSystemBarsStyle() {
+        if (statusBarStyle != null) {
+            setSystemBarsStyle(getActivity(), statusBarStyle, SystemBarsType.STATUS_BAR);
+        }
+        if (navigationBarStyle != null) {
+            setSystemBarsStyle(getActivity(), navigationBarStyle, SystemBarsType.NAVIGATION_BAR);
+        }
     }
 
     public static void setSystemBarsStyle(Activity activity, SystemBarsStyle style) {
