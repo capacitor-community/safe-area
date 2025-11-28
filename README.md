@@ -196,3 +196,52 @@ hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 | **`NavigationBar`** | <code>'NAVIGATION_BAR'</code> | The navigation bar on both Android and iOS. On iOS this is the "home indicator". On Android this is either the "navigation bar" or the "gesture bar". |
 
 </docgen-api>
+
+### Config
+
+<docgen-config>
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+| Prop                            | Type                                                        | Description                                                                                                                                                                        | Default           |
+| ------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **`statusBarStyle`**            | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the status bar initially.                                                                                                                        | <code>null</code> |
+| **`navigationBarStyle`**        | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the navigation bar initially. On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box. | <code>null</code> |
+| **`offsetForKeyboardInsetBug`** | <code>boolean</code>                                        |                                                                                                                                                                                    |                   |
+
+### Examples
+
+In `capacitor.config.json`:
+
+```json
+{
+  "plugins": {
+    "SafeArea": {
+      "statusBarStyle": undefined,
+      "navigationBarStyle": undefined,
+      "offsetForKeyboardInsetBug": undefined
+    }
+  }
+}
+```
+
+In `capacitor.config.ts`:
+
+```ts
+/// <reference types="@capacitor-community/safe-area" />
+
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  plugins: {
+    SafeArea: {
+      statusBarStyle: undefined,
+      navigationBarStyle: undefined,
+      offsetForKeyboardInsetBug: undefined,
+    },
+  },
+};
+
+export default config;
+```
+
+</docgen-config>
