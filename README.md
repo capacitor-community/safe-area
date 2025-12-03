@@ -15,18 +15,18 @@
 
 ## Introduction
 
-On web and iOS the safe area insets work perfectly fine out of the box<sup>1</sup>. That is, on these platforms the `env(safe-area-inset-*)` CSS variables will have the correct values by default. On Android (in combination with Capacitor), however, those CSS variables will not always have the correct values when Edge-to-Edge mode is enabled. So we need to work some magic in order to have correct behavior. This plugin does that by detecting the Chromium version a user has installed. If a user has a Chromium version lower than 140, this plugin makes sure the webview gets the safe area as a padding. The `env(safe-area-inset-*)` values will be set to `0px`. That means for the Chromium webview versions with a bug, the developer doesn't have to worry about safe area insets at all. For all other versions, the developer should handle the safe area insets just as he would on web or iOS (by using the `env(safe-area-inset-*)` CSS variables). In short you can think of this plugin as a polyfill for older webview versions.
+On web and iOS the safe area insets work perfectly fine out of the box<sup>1</sup>. That is, on these platforms the `env(safe-area-inset-*)` CSS variables will have the correct values by default. On Android (in combination with Capacitor), however, those CSS variables will not always have the correct values when Edge-to-Edge mode is enabled. So we need to work some magic in order to achieve the desired behavior. This plugin does that by detecting the Chromium version a user has installed. If a user has a Chromium version lower than 140, this plugin makes sure the webview gets the safe area as a padding. The `env(safe-area-inset-*)` values will be set to `0px`. That means for the Chromium webview versions with a bug, the developer doesn't have to worry about safe area insets at all. For all other versions, the developer should handle the safe area insets just as he would on web or iOS (by using the `env(safe-area-inset-*)` CSS variables). In short you can think of this plugin as a polyfill for older webview versions.
 
 > [!NOTE]
 >
-> <sup>1</sup> As with all web applications, you still need to tell the browser to use the whole available space on the
-> screen by adding a new viewport meta value:
+> <sup>1</sup> As with all (regular) web applications, you still need to tell the browser to scale the viewport as so to
+> fill the device display by setting a viewport meta value like so:
 >
 > ```html
 > <meta name="viewport" content="viewport-fit=cover" />
 > ```
 >
-> More info on the [Mozilla website](https://developer.mozilla.org/en-US/docs/Web/CSS/env#usage)
+> More info on the Mozilla website about setting the [`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/viewport#viewport-fit) and [using CSS env()](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/env#using_env_to_ensure_buttons_are_not_obscured_by_device_ui).
 
 ## Installation
 
@@ -62,15 +62,17 @@ class MainActivity : BridgeActivity() {
 }
 ```
 
-Additionally this plugin provides helper methods to style the system bars and its content. You can find the API docs [here](#system-bars-api).
+Additionally, this plugin provides helper methods to style the system bars and its content. You can find the API docs [here](#system-bars-api).
 
-## Quirks
+## Setup
 
-Currently there are a few known quirks:
+This plugin might conflict with some of your existing setup. Please go through the following steps, to ensure proper functioning of this plugin.
+
+> If you're installing this plugin into a fresh Capacitor setup, you can probably skip most - if not all - of these steps.
 
 ### `@capacitor/keyboard`
 
-The keyboard plugin by Capacitor has a configuration prop called `resizeOnFullScreen`. You should prevent to utilize that in your code by either omitting it or setting it to `false`. Otherwise it would interfere with the logic in this plugin. The bug that the Capacitor team is trying to workaround with that prop is already accounted for in this plugin. So you should be good to go a don't worry about it at all.
+The keyboard plugin by Capacitor has a configuration prop called `resizeOnFullScreen`. You should either omit it or set it to `false`. Otherwise it would interfere with the logic in this plugin. The bug that the Capacitor team is trying to fix with that prop is already accounted for in this plugin. So you should be good to go a don't worry about it at all.
 
 ### `@capacitor/status-bar`
 
@@ -78,19 +80,47 @@ When using `@capacitor-community/safe-area`, you should uninstall `@capacitor/st
 
 ### `adjustMarginsForEdgeToEdge` setting
 
-Capacitor provides a setting called `adjustMarginsForEdgeToEdge` which does a similar thing this plugin does when it detects a broken webview. It's advised to set this value to `disable` to prevent interference. On a similar note, you should probably remove `windowOptOutEdgeToEdgeEnforcement` if you've set that in the past.
+Capacitor provides a setting called `adjustMarginsForEdgeToEdge`. It's advised to either omit this value or set it to `disable` to prevent interference. This plugin already does a similar thing when it detects a broken webview.
+
+### `windowOptOutEdgeToEdgeEnforcement`
+
+If you've set `windowOptOutEdgeToEdgeEnforcement` in your `AndroidManifest.xml`, you should probably remove it. It has been deprecated and shouldn't be necessary when using this plugin anyways.
 
 ### Other safe area plugins
 
 If you've installed any other safe area plugin, you should remove them to prevent interference.
 
-These can include `@capawesome/capacitor-android-edge-to-edge-support`, `capacitor-plugin-safe-area`, `@aashu-dubey/capacitor-statusbar-safe-area` or even older versions of this plugin. You should make sure to uninstall those.
+Examples of these are: `@capawesome/capacitor-android-edge-to-edge-support`, `capacitor-plugin-safe-area` and `@aashu-dubey/capacitor-statusbar-safe-area`.
+
+Just make sure to uninstall those and you should be good to go.
+
+### Earlier versions of this plugin
+
+Alpha versions of this plugin (`@capacitor-community/safe-area@alpha`) are deprecated and usage of those versions is advised against. Please migrate to a `beta` or `latest` channel instead. Differences between the older versions and the newer versions are outlined [here](https://github.com/capacitor-community/safe-area/issues/82#issuecomment-3600442770).
+
+### Capacitor v8
+
+As of this writing, Capacitor v8 is still unreleased. But if you're using it anyways, you should set the following in your `capacitor.config.json`:
+
+```json
+{
+  "plugins": {
+    "SystemBars": {
+      "disableInsets": true
+    }
+  }
+}
+```
+
+## Quirks
+
+Currently, there is still one known quirk when using this plugin. If that quirk has been fixed, this plugin will receive one last beta version and will then be promoted to stable. As all bugs and issues will then be accounted for.
 
 ### Respecting the `viewport-fit=cover` tag
 
 When this plugin is installed, edge-to-edge mode is always enabled. Regardless of any other setting (except for broken webview versions of course). This means that the `viewport-fit=cover` tag is also not respected. So you should make sure any content loaded into the webview handles the `env(safe-area-inset-*)` accordingly. This is a known shortcoming of this plugin currently. I know how to fix this, but I'm awaiting answers from the Chromium team. Progress can be tracked [here](https://issues.chromium.org/issues/461332423). For most use cases this shouldn't be a problem though. As most apps either do or don't support edge-to-edge.
 
-### Differences between this plugin, `system-bars` and `status-bar`
+## Differences between this plugin, `system-bars` and `status-bar`
 
 The main differences are as follows:
 
