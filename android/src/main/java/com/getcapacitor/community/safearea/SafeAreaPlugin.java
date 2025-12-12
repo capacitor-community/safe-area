@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.webkit.WebViewCompat;
 
+import com.getcapacitor.BridgeWebViewClient;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
@@ -27,20 +28,6 @@ import java.util.regex.Pattern;
 
 @CapacitorPlugin(name = "SafeArea")
 public class SafeAreaPlugin extends Plugin {
-    private static final String viewportMetaJSFunction = """
-            function capacitorSafeAreaCheckMetaViewport() {
-                const meta = document.querySelectorAll("meta[name=viewport]");
-                if (meta.length == 0) {
-                    return false;
-                }
-                // get the last found meta viewport tag
-                const metaContent = meta[meta.length - 1].content;
-                return metaContent.includes("viewport-fit=cover");
-            }
-            
-            capacitorSafeAreaCheckMetaViewport();
-            """;
-
     private int webViewMajorVersion;
 
     // https://issues.chromium.org/issues/40699457
@@ -49,7 +36,7 @@ public class SafeAreaPlugin extends Plugin {
     // https://issues.chromium.org/issues/457682720
     private static final int WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX = 144;
 
-    private boolean hasMetaViewportCover = true;
+    protected boolean hasMetaViewportCover = true;
 
     // Use an initial value of `null`, so this plugin doesn't override any existing behavior by default
     private SystemBarsStyle statusBarStyle = null;
@@ -75,15 +62,19 @@ public class SafeAreaPlugin extends Plugin {
 
         updateSystemBarsStyle();
 
-        this.bridge.getWebView().evaluateJavascript(viewportMetaJSFunction, (res) -> {
-            // @TODO: this doesn't work yet.
-            // Seems like a bug in Chromium that the safe area insets do not get updated upon changing the return inside `setOnApplyWindowInsetsListener`
-            // @TODO: ideally this should be rechecked in `onPageFinished` for example. Because some webpages might support edge-to-edge whereas others do not.
-            // hasMetaViewportCover = res.equals("true");
+        hasMetaViewportCover = getConfig().getConfigJSON().optBoolean("initialViewportFitCover", true);
 
-            // Request new execution tree of `setOnApplyWindowInsetsListener`
-            this.bridge.getWebView().requestApplyInsets();
-        });
+        boolean detectViewportFitCoverChanges = getConfig().getConfigJSON().optBoolean("detectViewportFitCoverChanges", true);
+
+        if (detectViewportFitCoverChanges) {
+            BridgeWebViewClient webViewClient = this.bridge.getWebViewClient();
+            if (!(webViewClient instanceof SafeAreaWebViewClient)) {
+                // Only override webViewClient, if it's not already an instance of our custom webViewClient.
+                // Because it can be that a developer has already called `setWebViewClient` himself,
+                // and we do not want to override that custom webViewClient.
+                this.bridge.setWebViewClient(new SafeAreaWebViewClient(bridge));
+            }
+        }
 
         setupSafeAreaInsets();
     }

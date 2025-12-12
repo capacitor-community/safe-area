@@ -86,6 +86,10 @@ Capacitor provides a setting called `adjustMarginsForEdgeToEdge`. It's advised t
 
 If you've set `windowOptOutEdgeToEdgeEnforcement` in your `AndroidManifest.xml`, you should probably remove it. It has been deprecated and shouldn't be necessary when using this plugin anyways.
 
+### Extending `BridgeWebViewClient` and calling `setWebViewClient`
+
+If you're running Capacitor v7 and have extended the `BridgeWebViewClient` by calling `bridge.setWebViewClient` in your code, you should update your code so that it extends `SafeAreaWebViewClient` instead. In Capacitor v8 this can and will be worked around another way, so you shouldn't have to worry about that anymore.
+
 ### Other safe area plugins
 
 If you've installed any other safe area plugin, you should remove them to prevent interference.
@@ -112,28 +116,22 @@ As of this writing, Capacitor v8 is still unreleased. But if you're using it any
 }
 ```
 
-## Quirks
-
-Currently, there is still one known quirk when using this plugin. If that quirk has been fixed, this plugin will receive one last beta version and will then be promoted to stable. As all bugs and issues will then be accounted for.
-
-### Respecting the `viewport-fit=cover` tag
-
-When this plugin is installed, edge-to-edge mode is always enabled. Regardless of any other setting (except for broken webview versions of course). This means that the `viewport-fit=cover` tag is also not respected. So you should make sure any content loaded into the webview handles the `env(safe-area-inset-*)` accordingly. This is a known shortcoming of this plugin currently. I know how to fix this, but I'm awaiting answers from the Chromium team. Progress can be tracked [here](https://issues.chromium.org/issues/461332423). For most use cases this shouldn't be a problem though. As most apps either do or don't support edge-to-edge.
-
 ## Differences between this plugin, `system-bars` and `status-bar`
 
 The main differences are as follows:
 
-|                                                       | [`@capacitor-community/safe-area`](https://github.com/capacitor-community/safe-area)                                        | [`CapacitorSystemBars`](https://github.com/ionic-team/capacitor/blob/main/core/systembars.md)<sup>5</sup>                                                                                                            | [`@capacitor/status-bar`](https://capacitorjs.com/docs/apis/status-bar) |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Supported Capacitor versions                          | ✅ v7+                                                                                                                      | ⚠️ v8+                                                                                                                                                                                                               | ✅ v7+                                                                  |
-| Helper methods for styling and hiding the system bars | ✅                                                                                                                          | ✅                                                                                                                                                                                                                   | ✅                                                                      |
-| Updates styling of system bars upon config changes    | ✅                                                                                                                          | ✅                                                                                                                                                                                                                   | ✅                                                                      |
-| Enables Edge to Edge functionality                    | ✅                                                                                                                          | ✅                                                                                                                                                                                                                   | ❌                                                                      |
-| Philosophy<sup>2</sup>                                | ✅ Native approach. Aligns with iOS and web behavior. Does not require extra work. Fallback to padding for broken webviews. | ⚠️ All or nothing approach using custom CSS vars injection. Requires extra work (migrating from envs to vars). Doesn't distinguish between broken and fixed webview versions. Is arguably more prone to future bugs. | ❌                                                                      |
-| Fallback supported on Android versions                | ✅ Android 6+                                                                                                               | ❌ Android 15+ ([broken](https://github.com/ionic-team/capacitor/pull/8268#discussion_r2610099030) behavior on older versions)                                                                                       | N/A                                                                     |
-| Workaround for keyboard bug<sup>3</sup>               | ✅ Working out of the box                                                                                                   | ⚠️ Requires installing `@capacitor/keyboard` and setting `resizeOnFullScreen`. Their workaround also still has [bugs](https://github.com/ionic-team/capacitor/pull/8180#issuecomment-3512336606)                     | ❌                                                                      |
-| Workaround for another keyboard bug<sup>4</sup>       | ✅ Working out of the box                                                                                                   | ❌                                                                                                                                                                                                                   | ❌                                                                      |
+|                                                       | [`@capacitor-community/safe-area`](https://github.com/capacitor-community/safe-area)                                        | [`CapacitorSystemBars`](https://capacitorjs.com/docs/apis/system-bars)<sup>5</sup>                                                                                                                                     | [`@capacitor/status-bar`](https://capacitorjs.com/docs/apis/status-bar) |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Supported Capacitor versions                          | ✅ v7+                                                                                                                      | ⚠️ v8+                                                                                                                                                                                                                 | ✅ v7+                                                                  |
+| Helper methods for styling and hiding the system bars | ✅                                                                                                                          | ✅                                                                                                                                                                                                                     | ✅                                                                      |
+| Updates styling of system bars upon config changes    | ✅                                                                                                                          | ✅                                                                                                                                                                                                                     | ✅                                                                      |
+| Enables Edge to Edge functionality                    | ✅                                                                                                                          | ✅                                                                                                                                                                                                                     | ❌                                                                      |
+| Option to opt out of handling insets for Android      | ✅                                                                                                                          | ❌                                                                                                                                                                                                                     | N/A                                                                     |
+| Philosophy<sup>2</sup>                                | ✅ Native approach. Aligns with iOS and web behavior. Does not require extra work. Fallback to padding for broken webviews. | ⚠️ All or nothing approach using custom CSS vars injection. Requires extra work (migrating from envs to vars). Doesn't distinguish between broken and fixed webview versions. It's arguably more prone to future bugs. | N/A                                                                     |
+| Fallback supported on Android versions                | ✅ Android 6+                                                                                                               | ❌ Android 15+ ([broken](https://github.com/ionic-team/capacitor/pull/8268#discussion_r2610099030) behavior on older versions)                                                                                         | N/A                                                                     |
+| Workaround for resizing keyboard bug<sup>3</sup>      | ✅ Working out of the box                                                                                                   | ⚠️ Requires installing `@capacitor/keyboard` and setting `resizeOnFullScreen`. Their workaround also still has [bugs](https://github.com/ionic-team/capacitor/pull/8180#issuecomment-3512336606)                       | ❌                                                                      |
+| Workaround for inset keyboard bug<sup>4</sup>         | ✅ Working out of the box                                                                                                   | ❌                                                                                                                                                                                                                     | N/A                                                                     |
+| Detects `viewport-fit=cover` changes                  | ✅ Works for any arbitrary web content                                                                                      | ⚠️ Works only for web content that has Capacitor v8 set up                                                                                                                                                             | N/A                                                                     |
 
 <sup>2</sup> Chromium versions < 140 do not correctly report safe area insets. So we need a workaround for those webviews. This can be done using padding or custom CSS vars. This plugin advocates for using padding. As it seems to be the least breaking behavior.
 
@@ -146,6 +144,34 @@ bottom insets when the keyboard is shown. Which will be fixed in Chromium 144
 solution](https://github.com/ionic-team/capacitor/pull/8180) by means of a `CapacitorSystemBars` plugin. It's still a
 work in progress though. Currently that PR is merged as is and in a beta state. Their design/approach philosophy also
 deviates from the one in this plugin.
+
+## FAQ
+
+### Do I need this plugin?
+
+You probably do! Apps targeting Android sdk version 36 will automatically be in edge to edge mode on a device running Android 16+. This means you should properly support safe area insets. This works just fine out of the box. However Chromium versions < 140 have a bug that causes the webview to receive incorrect values (0px). This plugin works around that by adding a padding to the webview for those devices.
+
+### Why doesn't Capacitor take care of this out of the box?
+
+They can and they should. They tried / are trying actually. But IMHO their approach isn't ready for production (yet). The differences between their approach and the one of this plugin are outlined [here](#system-bars-api). I try to adhere to their coding style and I am actively providing feedback to the Capacitor team in hopes they will - sometime - upstream this plugin into their core codebase.
+
+### I don't care about safe area insets or edge to edge functionality!
+
+That's not a question ;) And your users might care about them though! So it's recommended to support them. But if you really do not want to support edge to edge, you've got two options:
+
+1. Remove the `viewport-fit=cover` meta tag if you've set that. Mind you that this removes edge to edge support entirely, for all platforms (Android, iOS and web)
+2. If you want to only remove support for Android, set the following value in your `capacitor.config.json`:
+   ```json
+   {
+     "plugins": {
+       "SafeArea": {
+         "detectViewportFitCoverChanges": false,
+         "initialViewportFitCover": false
+       }
+     }
+   }
+   ```
+   This effectively makes this plugin to only add padding around the webview on all of your Android devices. And disables detecting the `viewport-fit` value and disables passing through insets (because they're already consumed by the padding).
 
 ## System Bars API
 

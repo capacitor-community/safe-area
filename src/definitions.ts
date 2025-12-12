@@ -20,6 +20,35 @@ declare module '@capacitor/cli' {
       navigationBarStyle?: SystemBarsStyle;
 
       /**
+       * This plugin detects changes to the `viewport-fit=cover` meta tag.
+       * This comes in handy when you do not know for sure if the content loaded into the webview will have `viewport-fit` set to `cover`.
+       * For most use cases you do not need to touch this config variable.
+       * However if you know for sure you want to always keep the `initialViewportFitCover` value unchanged,
+       * you could disable this feature by setting it to `false`.
+       * Be aware that this might result in a visually broken UI if the content loaded into the webview does not correctly handle safe area insets.
+       *
+       * This option is only supported on Android.
+       *
+       * @default true
+       */
+      detectViewportFitCoverChanges?: boolean;
+
+      /**
+       * Set an initial value for the to be detected `viewport-fit=cover`.
+       * For most apps this value will eventually be `true`.
+       * Therefore this value is set to `true` by default to help prevent layout jumps and glitches.
+       * If you know (or want) the value to be `false` initially, you can set it here.
+       * The value will always end up correctly, no matter what you set here,
+       * as long as `detectViewportFitCoverChanges` is set to `true`.
+       * It only exists to help prevent layout jumps and glitches.
+       *
+       * This option is only supported on Android.
+       *
+       * @default true
+       */
+      initialViewportFitCover?: boolean;
+
+      /**
        * @deprecated Setting this value is not necessary anymore, as it now works out of the box.
        */
       offsetForKeyboardInsetBug?: boolean;
