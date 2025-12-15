@@ -195,7 +195,8 @@ setSystemBarsStyle(options: SystemBarsStyleOptions) => Promise<void>
 | ------------- | ------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#systembarsstyleoptions">SystemBarsStyleOptions</a></code> |
 
----
+--------------------
+
 
 ### showSystemBars(...)
 
@@ -207,7 +208,8 @@ showSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 | ------------- | ----------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#systembarsvisibilityoptions">SystemBarsVisibilityOptions</a></code> |
 
----
+--------------------
+
 
 ### hideSystemBars(...)
 
@@ -219,9 +221,11 @@ hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 | ------------- | ----------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#systembarsvisibilityoptions">SystemBarsVisibilityOptions</a></code> |
 
----
+--------------------
+
 
 ### Interfaces
+
 
 #### SystemBarsStyleOptions
 
@@ -230,13 +234,16 @@ hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 | **`style`** | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Style of the content of the system bars.                                                                                                                                                                                      | <code>'DEFAULT'</code> |
 | **`type`**  | <code><a href="#systembarstype">SystemBarsType</a></code>   | The system bar to which to apply the style. Providing `null` means it will be applied to both system bars. On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box. | <code>null</code>      |
 
+
 #### SystemBarsVisibilityOptions
 
 | Prop       | Type                                                      | Description                                                                             | Default           |
 | ---------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------- |
 | **`type`** | <code><a href="#systembarstype">SystemBarsType</a></code> | The system bar to hide or show. Providing `null` means it will toggle both system bars. | <code>null</code> |
 
+
 ### Enums
+
 
 #### SystemBarsStyle
 
@@ -245,6 +252,7 @@ hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 | **`Dark`**    | <code>'DARK'</code>    | Light system bar content on a dark background.                                                                                                                                                                           |
 | **`Light`**   | <code>'LIGHT'</code>   | For dark system bar content on a light background.                                                                                                                                                                       |
 | **`Default`** | <code>'DEFAULT'</code> | The style is based on the device appearance or the underlying content. If the device is using dark mode, the system bars content will be light. If the device is using light mode, the system bars content will be dark. |
+
 
 #### SystemBarsType
 
@@ -260,11 +268,13 @@ hideSystemBars(options: SystemBarsVisibilityOptions) => Promise<void>
 <docgen-config>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-| Prop                            | Type                                                        | Description                                                                                                                                                                        | Default           |
-| ------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| **`statusBarStyle`**            | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the status bar initially.                                                                                                                        | <code>null</code> |
-| **`navigationBarStyle`**        | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the navigation bar initially. On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box. | <code>null</code> |
-| **`offsetForKeyboardInsetBug`** | <code>boolean</code>                                        |                                                                                                                                                                                    |                   |
+| Prop                                | Type                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Default           |
+| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **`statusBarStyle`**                | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the status bar initially.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | <code>null</code> |
+| **`navigationBarStyle`**            | <code><a href="#systembarsstyle">SystemBarsStyle</a></code> | Indicates which style to apply to the navigation bar initially. On iOS the home indicator cannot be styled. It will always automatically be applied a color by iOS out of the box.                                                                                                                                                                                                                                                                                                                                                                                                                                      | <code>null</code> |
+| **`detectViewportFitCoverChanges`** | <code>boolean</code>                                        | This plugin detects changes to the `viewport-fit=cover` meta tag. This comes in handy when you do not know for sure if the content loaded into the webview will have `viewport-fit` set to `cover`. For most use cases you do not need to touch this config variable. However if you know for sure you want to always keep the `initialViewportFitCover` value unchanged, you could disable this feature by setting it to `false`. Be aware that this might result in a visually broken UI if the content loaded into the webview does not correctly handle safe area insets. This option is only supported on Android. | <code>true</code> |
+| **`initialViewportFitCover`**       | <code>boolean</code>                                        | Set an initial value for the to be detected `viewport-fit=cover`. For most apps this value will eventually be `true`. Therefore this value is set to `true` by default to help prevent layout jumps and glitches. If you know (or want) the value to be `false` initially, you can set it here. The value will always end up correctly, no matter what you set here, as long as `detectViewportFitCoverChanges` is set to `true`. It only exists to help prevent layout jumps and glitches. This option is only supported on Android.                                                                                   | <code>true</code> |
+| **`offsetForKeyboardInsetBug`**     | <code>boolean</code>                                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |                   |
 
 ### Examples
 
@@ -276,6 +286,8 @@ In `capacitor.config.json`:
     "SafeArea": {
       "statusBarStyle": undefined,
       "navigationBarStyle": undefined,
+      "detectViewportFitCoverChanges": undefined,
+      "initialViewportFitCover": undefined,
       "offsetForKeyboardInsetBug": undefined
     }
   }
@@ -294,6 +306,8 @@ const config: CapacitorConfig = {
     SafeArea: {
       statusBarStyle: undefined,
       navigationBarStyle: undefined,
+      detectViewportFitCoverChanges: undefined,
+      initialViewportFitCover: undefined,
       offsetForKeyboardInsetBug: undefined,
     },
   },
