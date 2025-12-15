@@ -119,13 +119,6 @@ public class SafeAreaPlugin extends Plugin {
                 ).build();
             }
 
-            // Optionally, we could allow users to workaround the older webview issues by passing through the insets as custom vars
-            // if (hasFixedWebView) {
-            //     Insets safeArea = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            //     injectSafeAreaCSS(safeArea.top, safeArea.right, safeArea.bottom, safeArea.left);
-            //     return windowInsets;
-            // }
-
             // We need to correct for a possible shown IME
             v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, keyboardVisible ? imeInsets.bottom : systemBarsInsets.bottom);
 
