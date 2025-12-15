@@ -104,7 +104,7 @@ Alpha versions of this plugin (`@capacitor-community/safe-area@alpha`) are depre
 
 ### Capacitor v8
 
-As of this writing, Capacitor v8 is still unreleased. But if you're using it anyways, you should set the following in your `capacitor.config.json`:
+As of this writing, Capacitor v8 has just been released. But if you're already using it, you should set the following in your `capacitor.config.json`:
 
 ```json
 {
@@ -149,7 +149,7 @@ deviates from the one in this plugin.
 
 ### Do I need this plugin?
 
-You probably do! Apps targeting Android sdk version 36 will automatically be in edge to edge mode on a device running Android 16+. This means you should properly support safe area insets. This works just fine out of the box. However Chromium versions < 140 have a bug that causes the webview to receive incorrect values (0px). This plugin works around that by adding a padding to the webview for those devices.
+You probably do! Apps targeting Android sdk version 36 will automatically be in edge to edge mode on a device running Android 16+. This means you should properly support safe area insets. This seemingly works just fine. However Chromium versions < 140 have a bug that causes the webview to receive incorrect values (0px). This plugin works around that by adding a padding to the webview for those devices. As a bonus, this plugin resizes the webview upon keyboard visibility changes, something that also isn't standard.
 
 ### Why doesn't Capacitor take care of this out of the box?
 
