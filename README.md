@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/maintenance/yes/2025?style=flat-square" />
+  <img src="https://img.shields.io/maintenance/yes/2026?style=flat-square" />
   <a href="https://www.npmjs.com/package/@capacitor-community/safe-area"><img src="https://img.shields.io/npm/l/@capacitor-community/safe-area?style=flat-square" /></a>
 <br>
   <a href="https://www.npmjs.com/package/@capacitor-community/safe-area"><img src="https://img.shields.io/npm/dw/@capacitor-community/safe-area?style=flat-square" /></a>
@@ -31,7 +31,7 @@ On web and iOS the safe area insets work perfectly fine out of the box<sup>1</su
 ## Installation
 
 ```bash
-npm install @capacitor-community/safe-area@beta
+npm install @capacitor-community/safe-area@^7.0.0
 npx cap sync
 ```
 
@@ -88,7 +88,7 @@ If you've set `windowOptOutEdgeToEdgeEnforcement` in your `AndroidManifest.xml`,
 
 ### Extending `BridgeWebViewClient` and calling `setWebViewClient`
 
-If you're running Capacitor v7 and have extended the `BridgeWebViewClient` by calling `bridge.setWebViewClient` in your code, you should update your code so that it extends `SafeAreaWebViewClient` instead. In Capacitor v8 this can and will be worked around another way, so you shouldn't have to worry about that anymore.
+If you're running Capacitor v7 and have extended the `BridgeWebViewClient` by calling `bridge.setWebViewClient` in your code, you should update your code so that it extends `SafeAreaWebViewClient` instead. If you're running Capacitor v8 you do not have to worry about this at all.
 
 ### Other safe area plugins
 
@@ -100,11 +100,11 @@ Just make sure to uninstall those and you should be good to go.
 
 ### Earlier versions of this plugin
 
-Alpha versions of this plugin (`@capacitor-community/safe-area@alpha`) are deprecated and usage of those versions is advised against. Please migrate to a `beta` or `latest` channel instead. Differences between the older versions and the newer versions are outlined [here](https://github.com/capacitor-community/safe-area/issues/82#issuecomment-3600442770).
+Alpha versions of this plugin (`@capacitor-community/safe-area@alpha`) are deprecated and usage of those versions is advised against. Please migrate to a `latest` channel instead. Differences between the older versions and the newer versions are outlined [here](https://github.com/capacitor-community/safe-area/issues/82#issuecomment-3600442770).
 
 ### Capacitor v8
 
-As of this writing, Capacitor v8 has just been released. But if you're already using it, you should set the following in your `capacitor.config.json`:
+If you're running Capacitor v8, you should set the following in your `capacitor.config.json`:
 
 ```json
 {
