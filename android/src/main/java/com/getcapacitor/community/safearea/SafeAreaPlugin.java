@@ -17,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.webkit.WebViewCompat;
 
-import com.getcapacitor.BridgeWebViewClient;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
@@ -45,6 +44,9 @@ public class SafeAreaPlugin extends Plugin {
     // Use an initial value of `null`, so this plugin doesn't override any existing behavior by default
     private SystemBarsStyle navigationBarStyle = null;
 
+    // Declare variable at this scope to help prevent adding multiple listeners.
+    private SafeAreaWebViewListener webViewListener;
+
     @Override
     public void load() {
         super.load();
@@ -67,19 +69,21 @@ public class SafeAreaPlugin extends Plugin {
 
         hasMetaViewportCover = getConfig().getConfigJSON().optBoolean("initialViewportFitCover", true);
 
+        setupSafeAreaInsets();
+    }
+
+    @Override
+    public void handleOnStart() {
+        super.handleOnStart();
+
         boolean detectViewportFitCoverChanges = getConfig().getConfigJSON().optBoolean("detectViewportFitCoverChanges", true);
 
         if (detectViewportFitCoverChanges) {
-            BridgeWebViewClient webViewClient = this.bridge.getWebViewClient();
-            if (!(webViewClient instanceof SafeAreaWebViewClient)) {
-                // Only override webViewClient, if it's not already an instance of our custom webViewClient.
-                // Because it can be that a developer has already called `setWebViewClient` himself,
-                // and we do not want to override that custom webViewClient.
-                this.bridge.setWebViewClient(new SafeAreaWebViewClient(bridge));
+            if (webViewListener == null) {
+                webViewListener = new SafeAreaWebViewListener(getBridge());
+                getBridge().addWebViewListener(webViewListener);
             }
         }
-
-        setupSafeAreaInsets();
     }
 
     private int getWebViewMajorVersion() {

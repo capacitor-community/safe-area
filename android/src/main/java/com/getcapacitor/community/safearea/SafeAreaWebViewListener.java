@@ -3,10 +3,10 @@ package com.getcapacitor.community.safearea;
 import android.webkit.WebView;
 
 import com.getcapacitor.Bridge;
-import com.getcapacitor.BridgeWebViewClient;
 import com.getcapacitor.PluginHandle;
+import com.getcapacitor.WebViewListener;
 
-public class SafeAreaWebViewClient extends BridgeWebViewClient {
+public class SafeAreaWebViewListener extends WebViewListener {
     private static final String viewportMetaJSFunction = """
             function capacitorSafeAreaCheckMetaViewport() {
                 const meta = document.querySelectorAll("meta[name=viewport]");
@@ -23,8 +23,7 @@ public class SafeAreaWebViewClient extends BridgeWebViewClient {
 
     private final Bridge bridge;
 
-    public SafeAreaWebViewClient(Bridge bridge) {
-        super(bridge);
+    public SafeAreaWebViewListener(Bridge bridge) {
         this.bridge = bridge;
     }
 
