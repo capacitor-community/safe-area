@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -47,6 +48,8 @@ public class SafeAreaPlugin extends Plugin {
     @Override
     public void load() {
         super.load();
+
+        warnAboutUnsupportedConfigurationValues();
 
         webViewMajorVersion = getWebViewMajorVersion();
 
@@ -92,6 +95,18 @@ public class SafeAreaPlugin extends Plugin {
         int majorVersion = Integer.parseInt(majorVersionStr);
 
         return majorVersion;
+    }
+
+    private void warnAboutUnsupportedConfigurationValues() {
+        String systemBarsInsetsHandling = bridge.getConfig().getPluginConfiguration("SystemBars").getConfigJSON().optString("insetsHandling");
+        if (!systemBarsInsetsHandling.equals("disable")) {
+            Log.e("SafeAreaPlugin", "You should set `SystemBars.insetsHandling` to `disable` in your `capacitor.config.json`. Other values can lead to unexpected behavior.");
+        }
+
+        boolean keyboardResizeOnFullScreen = bridge.getConfig().getPluginConfiguration("Keyboard").getConfigJSON().optBoolean("resizeOnFullScreen", false);
+        if (keyboardResizeOnFullScreen) {
+            Log.e("SafeAreaPlugin", "You should omit `Keyboard.resizeOnFullScreen` in your `capacitor.config.json`. Other values can lead to unexpected behavior.");
+        }
     }
 
     private void setupSafeAreaInsets() {
