@@ -30,6 +30,15 @@ On web and iOS the safe area insets work perfectly fine out of the box<sup>1</su
 
 ## Installation
 
+### For Capacitor v8
+
+```bash
+npm install @capacitor-community/safe-area
+npx cap sync
+```
+
+### For Capacitor v7
+
 ```bash
 npm install @capacitor-community/safe-area@^7.0.0
 npx cap sync
