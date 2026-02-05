@@ -51,6 +51,10 @@ The plugin itself is enabled automatically. Additionally, you should enable nati
 Java:
 
 ```java
+import android.os.Bundle;
+import com.getcapacitor.BridgeActivity;
+import androidx.activity.EdgeToEdge;
+
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,11 @@ public class MainActivity extends BridgeActivity {
 Kotlin:
 
 ```kotlin
+
+import android.os.Bundle;
+import com.getcapacitor.BridgeActivity;
+import androidx.activity.EdgeToEdge;
+
 class MainActivity : BridgeActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
