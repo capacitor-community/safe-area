@@ -67,7 +67,6 @@ public class MainActivity extends BridgeActivity {
 Kotlin:
 
 ```kotlin
-
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 import androidx.activity.EdgeToEdge;
