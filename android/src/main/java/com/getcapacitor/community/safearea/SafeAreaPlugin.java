@@ -122,10 +122,11 @@ public class SafeAreaPlugin extends Plugin {
             Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
             boolean keyboardVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
+            boolean shouldApplyImePadding = webViewMajorVersion < WEBVIEW_VERSION_WITH_SAFE_AREA_KEYBOARD_FIX;
 
             if (shouldPassthroughInsets) {
                 // We need to correct for a possible shown IME
-                v.setPadding(0, 0, 0, keyboardVisible ? imeInsets.bottom : 0);
+                v.setPadding(0, 0, 0, (keyboardVisible && shouldApplyImePadding) ? imeInsets.bottom : 0);
 
                 return new WindowInsetsCompat.Builder(windowInsets).setInsets(
                         WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout(),
